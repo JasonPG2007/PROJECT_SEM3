@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using static System.Net.WebRequestMethods;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
@@ -26,10 +27,20 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            Question listQuestions = JsonSerializer.Deserialize<Question>(data, options);
+            List<Question> listQuestions = JsonSerializer.Deserialize<List<Question>>(data, options);
             return View(listQuestions);
         }
-
+        public async Task<ActionResult> StartQuiz(int id)
+        {
+            HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetAnswerByExam/{id}");
+            var data = await responseMessage.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Question> question = JsonSerializer.Deserialize<List<Question>>(data, options);
+            return View(question);
+        }
         // GET: QuestionController/Details/5
         public ActionResult Details(int id)
         {
@@ -45,15 +56,25 @@ namespace WebMVC.Areas.Admin.Controllers
         // POST: QuestionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(Question question)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                Random random = new Random();
+                question.QuestionID = random.Next();
+                question.DateMake = DateTime.Now;
+                var data = JsonSerializer.Serialize(question);
+                var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage responseMessage = await httpClient.PostAsync(ApiUrl, typeData);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                throw new ArgumentException("Creat failed.");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw new Exception(ex.Message);
             }
         }
 
@@ -72,9 +93,9 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw new Exception(ex.Message);
             }
         }
 
@@ -93,9 +114,9 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw new Exception(ex.Message);
             }
         }
     }

@@ -33,10 +33,26 @@ namespace WebAPI.Controllers
             }
             return check;
         }
+        [HttpGet("GetAnswerByExam/{id}")]
+        public IEnumerable<Question> GetQuestionByExam(int id)
+        {
+            var check = questionRepository.GetQuestionsByExam(id);
+            if (check != null)
+            {
+                return check;
+            }
+            return Enumerable.Empty<Question>();
+        }
 
         // POST api/<QuestionAPIController>
         [HttpPost]
         public void Post(Question question)
+        {
+            questionRepository.InsertQuestion(question);
+        }
+        [Route("CheckAnswer")]
+        [HttpPost]
+        public void Post2(Question question)
         {
             questionRepository.InsertQuestion(question);
         }

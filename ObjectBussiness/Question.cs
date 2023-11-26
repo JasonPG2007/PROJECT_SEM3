@@ -29,7 +29,7 @@ namespace ObjectBussiness
         [Display(Name = "Correct answer")]
         public string CorrectAnswer { get; set; }
         public double Point { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         [Display(Name = "Day created")]
         public DateTime DateMake { get; set; }
         [JsonIgnore]

@@ -1,55 +1,89 @@
-﻿@model ObjectBussiness.Question
+﻿@model IEnumerable<ObjectBussiness.Question>
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="container mt-5">
-    <div class="d-flex justify-content-center row">
-        <div class="col-md-10 col-lg-10">
-            @using (Html.BeginForm("", "Error", FormMethod.Post))
-            {
-                <div class="border">
-                    <div class="question bg-white p-3 border-bottom">
-                        <div class="d-flex flex-row justify-content-between align-items-center mcq">
-                            @* <h4>Thi trắc nghiệm</h4><span>(@context câu hỏi)</span> *@
-                        </div>
-                    </div>
-                    <div class="question bg-white p-3 border-bottom">
-                        <div class="d-flex flex-row align-items-center question-title">
-                            @Html.DisplayFor(x => x.QuestionName, new { @class = "mt-1 ml-2 text-danger" })
-                        </div><div class="ans ml-2">
-                            <label class="radio">
-                                @Html.RadioButtonFor(modelItem => modelItem.AnswerA, Model.AnswerA)
-                                <span>@Model.AnswerA</span>
-                            </label>
-                        </div><div class="ans ml-2">
-                            <label class="radio">
-                                @Html.RadioButtonFor(modelItem => modelItem.AnswerB, Model.AnswerB)
-                                <span>@Model.AnswerB</span>
-                            </label>
-                        </div><div class="ans ml-2">
-                            <label class="radio">
-                                @Html.RadioButtonFor(modelItem => modelItem.AnswerC, Model.AnswerC)
-                                <span>@Model.AnswerC</span>
-                            </label>
-                        </div><div class="ans ml-2">
-                            <label class="radio">
-                                @Html.RadioButtonFor(modelItem => modelItem.AnswerD, Model.AnswerD)
-                                <span>@Model.AnswerD</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
-                        <button class="btn btn-primary border-success align-items-center btn-success">Tính kết quả</button>
-                    </div>
-                </div>
-                <br />
-                @*       @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page = page,SearchString = @Context.Request.Query["SearchString"]}),
-            new X.PagedList.Web.Common.PagedListRenderOptions {
-            LiElementClasses = new string[] {"page-item"},
-            PageClasses = new string[] { "page-link " }
-            }) *@
-            }
-        </div>
-    </div>
-</div>
+
+<h1>Index</h1>
+
+<p>
+    <a href="@Url.Action("Create","Exam")">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.QuestionID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorrectAnswer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Point)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateMake)
+            </th>
+            <th>Control</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuestionID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExamID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerA)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Point)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateMake)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Do exam", "StartQuiz", "Question", new { id = item.ExamID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

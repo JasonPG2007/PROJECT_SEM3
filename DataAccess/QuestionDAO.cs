@@ -9,6 +9,7 @@ namespace DataAccess
 {
     public class QuestionDAO
     {
+        private readonly PetroleumBusinessDBContext db;
         private static QuestionDAO instance = null;
         private static readonly object Lock = new object();
         public static QuestionDAO Instance
@@ -24,6 +25,31 @@ namespace DataAccess
                     return instance;
                 }
             }
+        }
+        public QuestionDAO()
+        {
+            db = new PetroleumBusinessDBContext();
+        }
+        public IEnumerable<Question> GetQuestionsByExam(int id)
+        {
+            var question = from a in db.Questions
+                           join b in db.Exams
+                           on a.ExamID equals b.ExamID
+                           where a.ExamID == id
+                           select new Question
+                           {
+                               QuestionID = a.QuestionID,
+                               QuestionName = a.QuestionName,
+                               AnswerA = a.AnswerA,
+                               AnswerB = a.AnswerB,
+                               AnswerC = a.AnswerC,
+                               AnswerD = a.AnswerD,
+                               CorrectAnswer = a.CorrectAnswer,
+                               DateMake = a.DateMake,
+                               Note = a.Note,
+                               Point = a.Point,
+                           };
+            return question;
         }
         public IEnumerable<Question> GetQuestions()
         {
