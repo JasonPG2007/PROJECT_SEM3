@@ -14,5 +14,6 @@ namespace Repository
         void UpdateNews (News n);
         News GetNewsById(int id);
         List<News> GetAllNews();
+        List<NewsCategory> GetAllNewsCategories();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 
 namespace ObjectBussiness
 {
@@ -16,6 +17,7 @@ namespace ObjectBussiness
         public DbSet<Elect> Elects { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<History> Histories { get; set; }
+        public DbSet<NewsCategory> NewsCategories{ get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var builder = new ConfigurationBuilder()
@@ -35,6 +37,10 @@ namespace ObjectBussiness
             modelBuilder.Entity<Elect>().HasData(
                 new Elect { ElectID = 1, Status = true },
                 new Elect { ElectID = 2, Status = false });
+
+            modelBuilder.Entity<NewsCategory>().HasData(
+                new NewsCategory { CategoryID = 1, CategoryName = "Personnel recruitment" },
+                new NewsCategory { CategoryID = 2, CategoryName = "Gasoline prices"});
         }
     }
 }

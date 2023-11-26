@@ -190,6 +190,9 @@ namespace ObjectBussiness.Migrations
                     b.Property<int>("AccountID")
                         .HasColumnType("int");
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Contents")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -197,7 +200,14 @@ namespace ObjectBussiness.Migrations
                     b.Property<DateTime>("DateSubmitted")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("NewsCategoriesCategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Picture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -205,11 +215,42 @@ namespace ObjectBussiness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Visible")
+                        .HasColumnType("bit");
+
                     b.HasKey("NewsID");
 
                     b.HasIndex("AccountID");
 
+                    b.HasIndex("NewsCategoriesCategoryID");
+
                     b.ToTable("News");
+                });
+
+            modelBuilder.Entity("ObjectBussiness.NewsCategory", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("NewsCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            CategoryName = "Personnel recruitment"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            CategoryName = "Gasoline prices"
+                        });
                 });
 
             modelBuilder.Entity("ObjectBussiness.Question", b =>
@@ -376,7 +417,13 @@ namespace ObjectBussiness.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ObjectBussiness.NewsCategory", "NewsCategories")
+                        .WithMany("News")
+                        .HasForeignKey("NewsCategoriesCategoryID");
+
                     b.Navigation("Account");
+
+                    b.Navigation("NewsCategories");
                 });
 
             modelBuilder.Entity("ObjectBussiness.Question", b =>
@@ -455,6 +502,11 @@ namespace ObjectBussiness.Migrations
             modelBuilder.Entity("ObjectBussiness.History", b =>
                 {
                     b.Navigation("ResultCandidates");
+                });
+
+            modelBuilder.Entity("ObjectBussiness.NewsCategory", b =>
+                {
+                    b.Navigation("News");
                 });
 
             modelBuilder.Entity("ObjectBussiness.Role", b =>

@@ -15,11 +15,16 @@ namespace ObjectBussiness
         public int NewsID { get; set; }
         public string Title { get; set; }
         public string Contents { get; set; }
+        public string ShortDescription { get; set; }
         public string Picture { get; set; }
+        public bool Visible { get; set; }
         //Person create news
-        public int AccountID { get; set; }
         public DateTime DateSubmitted { get; set; }
+        public int AccountID { get; set; }
+        public int CategoryID { get; set; }
         [JsonIgnore]
         public virtual Account? Account { get; set; }
+        [JsonIgnore]
+        public virtual NewsCategory? NewsCategories { get; set; }
     }
 }

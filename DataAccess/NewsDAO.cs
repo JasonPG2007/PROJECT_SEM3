@@ -10,6 +10,22 @@ namespace DataAccess
 {
     public class NewsDAO
     {
+        private static NewsDAO instance = null;
+        public static  readonly object instanceLock = new object();
+        public static NewsDAO Instance
+        {
+            get
+            {
+                lock (instanceLock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new NewsDAO();
+                    }
+                    return instance;
+                }
+            }
+        }
         public static News FindNewsById(int id)
         {
             News n = new News();
@@ -17,7 +33,7 @@ namespace DataAccess
             {
                 using (var context = new PetroleumBusinessDBContext())
                 {
-                    n = context.News.SingleOrDefault(x => x.NewsID == id);
+                    n = context.News.FirstOrDefault(x => x.NewsID == id);
                 }
             }
             catch (Exception ex)

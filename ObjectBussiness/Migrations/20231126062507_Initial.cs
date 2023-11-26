@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ObjectBussiness.Migrations
 {
     /// <inheritdoc />
-    public partial class Initital : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,6 +72,18 @@ namespace ObjectBussiness.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Histories", x => x.HistoryID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NewsCategories",
+                columns: table => new
+                {
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NewsCategories", x => x.CategoryID);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,9 +234,13 @@ namespace ObjectBussiness.Migrations
                     NewsID = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contents = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Picture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Visible = table.Column<bool>(type: "bit", nullable: false),
+                    DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AccountID = table.Column<int>(type: "int", nullable: false),
-                    DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CategoryID = table.Column<int>(type: "int", nullable: false),
+                    NewsCategoriesCategoryID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -235,6 +251,11 @@ namespace ObjectBussiness.Migrations
                         principalTable: "Accounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_News_NewsCategories_NewsCategoriesCategoryID",
+                        column: x => x.NewsCategoriesCategoryID,
+                        principalTable: "NewsCategories",
+                        principalColumn: "CategoryID");
                 });
 
             migrationBuilder.InsertData(
@@ -244,6 +265,15 @@ namespace ObjectBussiness.Migrations
                 {
                     { 1, true },
                     { 2, false }
+                });
+
+            migrationBuilder.InsertData(
+                table: "NewsCategories",
+                columns: new[] { "CategoryID", "CategoryName" },
+                values: new object[,]
+                {
+                    { 1, "Personnel recruitment" },
+                    { 2, "Gasoline prices" }
                 });
 
             migrationBuilder.InsertData(
@@ -281,6 +311,11 @@ namespace ObjectBussiness.Migrations
                 name: "IX_News_AccountID",
                 table: "News",
                 column: "AccountID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_News_NewsCategoriesCategoryID",
+                table: "News",
+                column: "NewsCategoriesCategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_ExamID",
@@ -331,6 +366,9 @@ namespace ObjectBussiness.Migrations
 
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "NewsCategories");
 
             migrationBuilder.DropTable(
                 name: "Elects");
