@@ -12,7 +12,7 @@ using ObjectBussiness;
 namespace ObjectBussiness.Migrations
 {
     [DbContext(typeof(PetroleumBusinessDBContext))]
-    [Migration("20231120005516_Initial")]
+    [Migration("20231127094516_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -247,7 +247,6 @@ namespace ObjectBussiness.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Point")

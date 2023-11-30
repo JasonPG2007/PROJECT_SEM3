@@ -31,6 +31,14 @@ namespace DataAccess
             List<Exam> listExams = context.Exams.ToList();
             return listExams;
         }
+        public Exam GetRoom(int room)
+        {
+            var context = new PetroleumBusinessDBContext();
+            List<Exam> listExams = context.Exams.ToList();
+            var checkRoom = GetExamById(room);
+            return checkRoom;
+
+        }
         public Exam GetExamById(int id)
         {
             using var context = new PetroleumBusinessDBContext();

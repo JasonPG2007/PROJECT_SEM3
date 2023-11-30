@@ -32,14 +32,33 @@ namespace WebMVC.Areas.Admin.Controllers
         }
         public async Task<ActionResult> StartQuiz(int id)
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetAnswerByExam/{id}");
-            var data = await responseMessage.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
+            HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetQuestionByExam/{id}");
+            if (responseMessage.IsSuccessStatusCode)
             {
-                PropertyNameCaseInsensitive = true
-            };
-            List<Question> question = JsonSerializer.Deserialize<List<Question>>(data, options);
-            return View(question);
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                Question question = JsonSerializer.Deserialize<Question>(data, options);
+                return View(question);
+            }
+            else
+            {
+                return View();
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> StartQuiz(Question question)
+        {
+            var data = JsonSerializer.Serialize(question);
+            var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage responseMessage = await httpClient.PostAsync("https://localhost:7274/api/QuestionAPI/CheckAnswer", typeData);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("StartQuiz");
+            }
+            throw new ArgumentException("Error check , please try again");
         }
         // GET: QuestionController/Details/5
         public ActionResult Details(int id)
@@ -60,17 +79,21 @@ namespace WebMVC.Areas.Admin.Controllers
         {
             try
             {
-                Random random = new Random();
-                question.QuestionID = random.Next();
-                question.DateMake = DateTime.Now;
-                var data = JsonSerializer.Serialize(question);
-                var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage responseMessage = await httpClient.PostAsync(ApiUrl, typeData);
-                if (responseMessage.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction(nameof(Index));
+                    Random random = new Random();
+                    question.QuestionID = random.Next();
+                    question.DateMake = DateTime.Now;
+                    var data = JsonSerializer.Serialize(question);
+                    var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                    HttpResponseMessage responseMessage = await httpClient.PostAsync(ApiUrl, typeData);
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    throw new ArgumentException("Creat failed.");
                 }
-                throw new ArgumentException("Creat failed.");
+                return View();
             }
             catch (Exception ex)
             {

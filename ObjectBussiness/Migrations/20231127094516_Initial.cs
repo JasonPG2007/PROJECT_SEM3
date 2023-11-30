@@ -125,7 +125,7 @@ namespace ObjectBussiness.Migrations
                     AnswerD = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Point = table.Column<double>(type: "float", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateMake = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>

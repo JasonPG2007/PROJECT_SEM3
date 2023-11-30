@@ -14,5 +14,6 @@ namespace Repository
         public void InsertExam(Exam exam);
         public void UpdateExam(Exam exam);
         public void DeleteExam(int id);
+        public Exam GetRoom(int room);
     }
 }

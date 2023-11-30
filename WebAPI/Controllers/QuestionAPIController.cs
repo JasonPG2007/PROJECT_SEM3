@@ -11,6 +11,7 @@ namespace WebAPI.Controllers
     public class QuestionAPIController : ControllerBase
     {
         private readonly IQuestionRepository questionRepository;
+        private Queue<Question> q = new Queue<Question>();
         public QuestionAPIController()
         {
             questionRepository = new QuestionRepository();
@@ -43,7 +44,28 @@ namespace WebAPI.Controllers
             }
             return Enumerable.Empty<Question>();
         }
-
+        [Route("GetQueueQuestion")]
+        [HttpGet]
+        public ActionResult<Question> GetQueueQuestion(int score)
+        {
+            PetroleumBusinessDBContext db = new PetroleumBusinessDBContext();
+            if (q.Count == 0)
+            {
+                foreach (var item in db.Questions.ToList())
+                {
+                    q.Enqueue(item);
+                }
+            }
+            if (q.Count > 0)
+            {
+                Question question = q.Dequeue();
+                return question;
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
         // POST api/<QuestionAPIController>
         [HttpPost]
         public void Post(Question question)
@@ -52,9 +74,39 @@ namespace WebAPI.Controllers
         }
         [Route("CheckAnswer")]
         [HttpPost]
-        public void Post2(Question question)
+        public void CheckAnswer(Question question)
         {
-            questionRepository.InsertQuestion(question);
+            int score = 0;
+            string correctAnswer = "";
+            if (question.AnswerA != null)
+            {
+                correctAnswer = "A";
+            }
+            if (question.AnswerB != null)
+            {
+                correctAnswer = "B";
+            }
+            if (question.AnswerC != null)
+            {
+                correctAnswer = "C";
+            }
+            if (question.AnswerD != null)
+            {
+                correctAnswer = "D";
+            }
+            Queue<Question> q = new Queue<Question>();
+            PetroleumBusinessDBContext db = new PetroleumBusinessDBContext();
+            foreach (var item in db.Questions.ToList())
+            {
+                q.Enqueue(item);
+            }
+            question = q.Peek();
+            q.Dequeue();
+            if (correctAnswer.Equals(question.CorrectAnswer))
+            {
+                score += 1;
+            }
+            RedirectToAction("GetQueueQuestion", new { data = score });
         }
 
         // PUT api/<QuestionAPIController>/5

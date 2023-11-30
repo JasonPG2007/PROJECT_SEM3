@@ -1,65 +1,79 @@
-﻿@model IEnumerable<ObjectBussiness.Question>
+﻿@model ObjectBussiness.Question
 
 @{
     ViewData["Title"] = "StartQuiz";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>StartQuiz</h1>
-
-<h4>Question</h4>
-<hr />
-<div class="container mt-5">
-    <div class="d-flex justify-content-center row">
-        <div class="col-md-10 col-lg-10">
-            @using (Html.BeginForm("StartQuiz", "Question", FormMethod.Post))
-            {
-                foreach (var item in Model)
+@if (ViewBag.Message == null)
+{
+    <h1>StartQuiz</h1>
+    <hr />
+    <div class="container mt-5">
+        <div class="d-flex justify-content-center row">
+            <div class="col-md-10 col-lg-10">
+                @using (Html.BeginForm("StartQuiz", "Question", FormMethod.Post))
                 {
                     <div class="border">
                         <div class="question bg-white p-3 border-bottom">
                             <div class="d-flex flex-row justify-content-between align-items-center mcq">
-                                @* <h4>Thi trắc nghiệm</h4><span>(@context câu hỏi)</span> *@
+                                <h4>Quiz</h4><span>(@ViewBag.Count question)</span>
                             </div>
                         </div>
                         <div class="question bg-white p-3 border-bottom">
                             <div class="d-flex flex-row align-items-center question-title">
-                                @Html.DisplayFor(x => item.QuestionName, new { @class = "mt-1 ml-2 text-danger" })
-                            </div><div class="ans ml-2">
+                                @Html.DisplayFor(x => x.QuestionName, new { @class = "mt-1 ml-2 text-danger" })
+                            </div>
+                            <div class="ans ml-2">
                                 <label class="radio">
-                                    @Html.RadioButtonFor(modelItem => item.AnswerA, item.AnswerA)
-                                    <span>@item.AnswerA</span>
+                                    <h3>@Html.RadioButtonFor(x => x.AnswerA, new { @class = "form-control" }) @Model.AnswerA</h3>
                                 </label>
-                            </div><div class="ans ml-2">
+                            </div>
+                            <div class="ans ml-2">
                                 <label class="radio">
-                                    @Html.RadioButtonFor(modelItem => item.AnswerB, item.AnswerB)
-                                    <span>@item.AnswerB</span>
+                                    <h3>@Html.RadioButtonFor(x => x.AnswerB, new { @class = "form-control" }) @Model.AnswerB</h3>
                                 </label>
-                            </div><div class="ans ml-2">
+                            </div>
+                            <div class="ans ml-2">
                                 <label class="radio">
-                                    @Html.RadioButtonFor(modelItem => item.AnswerC, item.AnswerC)
-                                    <span>@item.AnswerC</span>
+                                    <h3>@Html.RadioButtonFor(x => x.AnswerC, new { @class = "form-control" }) @Model.AnswerC</h3>
                                 </label>
-                            </div><div class="ans ml-2">
+                            </div>
+                            <div class="ans ml-2">
                                 <label class="radio">
-                                    @Html.RadioButtonFor(modelItem => item.AnswerD, item.AnswerD)
-                                    <span>@item.AnswerD</span>
+                                    <h3>@Html.RadioButtonFor(x => x.AnswerD, new { @class = "form-control" }) @Model.AnswerD</h3>
+                                </label>
+                            </div>
+                            <div style="display:none" class="ans ml-2">
+                                <label class="radio">
+                                    <h3>@Html.RadioButtonFor(x => x.CorrectAnswer, new { @class = "form-control" }) @Model.CorrectAnswer</h3>
                                 </label>
                             </div>
                         </div>
-                        <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
-                            <button class="btn btn-primary border-success align-items-center btn-success">Tính kết quả</button>
-                        </div>
                     </div>
-                }
-                <br />
-                @*       @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page = page,SearchString = @Context.Request.Query["SearchString"]}),
+                    <div class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
+                        <button class="btn btn-primary border-success align-items-center btn-success">Submit</button>
+                    </div>
+                    <br />
+                    @*       @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page = page,SearchString = @Context.Request.Query["SearchString"]}),
             new X.PagedList.Web.Common.PagedListRenderOptions {
             LiElementClasses = new string[] {"page-item"},
             PageClasses = new string[] { "page-link " }
             }) *@
-            }
+                }
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <h1>@ViewBag.Message</h1>
+    <hr />
+}
+
+@if (TempData["Score"] != null)
+{
+        @TempData["Score"]
+}
+
 

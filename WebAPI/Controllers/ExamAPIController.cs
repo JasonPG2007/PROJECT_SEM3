@@ -33,6 +33,23 @@ namespace WebAPI.Controllers
             }
             return NotFound();
         }
+        [HttpGet("GetRoom/{id}")]
+        public ActionResult<Exam> GetRoom(int id)
+        {
+            var check = examRepository.GetRoom(id);
+            if (check == null)
+            {
+                return NotFound();
+            }
+            return check;
+        }
+        [Route("PostRoom")]
+        [HttpPost]
+        public ActionResult<Exam> GetRoom()
+        {
+            //var check = examRepository.GetRoom(room);
+            return NotFound();
+        }
 
         // POST api/<ExamAPIController>
         [HttpPost]

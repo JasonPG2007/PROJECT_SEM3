@@ -16,6 +16,8 @@ namespace Repository
 
         public IEnumerable<Exam> GetExams() => ExamDAO.Instance.GetExams();
 
+        public Exam GetRoom(int room) => ExamDAO.Instance.GetRoom(room);
+
         public void InsertExam(Exam exam) => ExamDAO.Instance.InsertExam(exam);
 
         public void UpdateExam(Exam exam) => ExamDAO.Instance.UpdateExam(exam);

@@ -29,7 +29,36 @@ namespace WebMVC.Areas.Admin.Controllers
             List<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options);
             return View(listExams);
         }
+        public async Task<ActionResult> ExamDashboard(int id)
+        {
+            if (id != 0)
+            {
+                HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/ExamAPI/GetRoom/{id}");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("StartQuiz", "Question", id);
+                }
+                TempData["msg"] = "Room not found...";
+                return View();
+            }
+            else
+            {
+                return View();
+            }
 
+        }
+        //[HttpPost]
+        //public async Task<ActionResult> ExamDashboard(int room)
+        //{
+        //    var data = JsonSerializer.Serialize(room);
+        //    var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+        //    HttpResponseMessage responseMessage = await httpClient.PostAsync("https://localhost:7274/api/ExamAPI/GetRoom", typeData);
+        //    if (responseMessage.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToAction("StartQuiz", "Question");
+        //    }
+        //    throw new ArgumentException("Room not found...");
+        //}
         // GET: ExamController/Details/5
         public ActionResult Details(int id)
         {
