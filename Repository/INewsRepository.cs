@@ -9,11 +9,12 @@ namespace Repository
 {
     public interface INewsRepository
     {
-        void SaveNews(News n);
-        void DeleteNews(News n);
-        void UpdateNews (News n);
+        IEnumerable<News> GetNewsList(string sortBy);
+        IEnumerable<News> GetNewsByName(string name, string sortBy);
         News GetNewsById(int id);
-        List<News> GetAllNews();
-        List<NewsCategory> GetAllNewsCategories();
+        void InsertNews(News n);
+        void EditNews(News n);
+        void DeleteNews(int id);
+
     }
 }

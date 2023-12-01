@@ -5,50 +5,53 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<header class="panel-heading">
+    News Management
+</header>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @Html.ActionLink("Creat Post","Create","Post", null, new {@class="btn btn-success"})
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NewsID)
+                @{
+                    var sortBy = Context.Request.Query["sortby"] == "id" ? "iddesc" : "id";
+                }
+                <a href="@Url.Action("Index","Post",new {sortBy=sortBy,SearchString=@Context.Request.Query["SearchString"]})"></a>
+                Post ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contents)
+                Contents
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ShortDescription)
+                Short Content
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Picture)
+                Image
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Visible)
+               Date Publish
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateSubmitted)
+                Catetory ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AccountID)
+                Account Creat
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryID)
-            </th>
-            <th></th>
+            <th>Setting</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NewsID)
-            </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.NewsID)
+             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -56,29 +59,27 @@
                 @Html.DisplayFor(modelItem => item.Contents)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ShortDescription)
+                @Html.DisplayFor(modelItem => item.ShortContents)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Picture)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Visible)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateSubmitted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountID)
+                 @Convert.ToDateTime(item.DateSubmitted).ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CategoryID)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.DisplayFor(modelItem => item.AccountID)
+            </td>
+            <td>
+                    <input type="checkbox" name="SelectedCatDelete" value="@item.NewsID">
+                    @Html.ActionLink("Update", "Edit", new {  id=item.NewsID  },new {@class="text-success"}) |
+                    @Html.ActionLink("Remove", "Delete", new {id=item.NewsID },new {@class="text-danger"})
             </td>
         </tr>
 }
     </tbody>
 </table>
+

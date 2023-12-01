@@ -37,10 +37,10 @@ namespace ObjectBussiness
             modelBuilder.Entity<Elect>().HasData(
                 new Elect { ElectID = 1, Status = true },
                 new Elect { ElectID = 2, Status = false });
-
+            // Add News Category
             modelBuilder.Entity<NewsCategory>().HasData(
-                new NewsCategory { CategoryID = 1, CategoryName = "Personnel recruitment" },
-                new NewsCategory { CategoryID = 2, CategoryName = "Gasoline prices"});
+               new NewsCategory  { CategoryID = 1, CategoryName = "Gasoline Prices" },
+               new NewsCategory { CategoryID = 2, CategoryName = "Recruitment Jobs" });
         }
     }
 }

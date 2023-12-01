@@ -11,11 +11,11 @@ namespace ObjectBussiness
 {
     public class News
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NewsID { get; set; }
         public string Title { get; set; }
         public string Contents { get; set; }
-        public string ShortDescription { get; set; }
+        public string ShortContents { get; set; }
         public string Picture { get; set; }
         public DateTime DateSubmitted { get; set; }
         public int AccountID { get; set; }
@@ -23,6 +23,6 @@ namespace ObjectBussiness
         [JsonIgnore]
         public virtual Account? Account { get; set; }
         [JsonIgnore]
-        public virtual NewsCategory? NewsCategories { get; set; }
+        public virtual NewsCategory? NewsCategory { get; set; }
     }
 }

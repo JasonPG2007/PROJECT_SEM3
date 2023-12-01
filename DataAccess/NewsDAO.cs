@@ -26,15 +26,44 @@ namespace DataAccess
                 }
             }
         }
-        public static News FindNewsById(int id)
+        public IEnumerable<News> GetNewsList(string sortBy)
         {
-            News n = new News();
+            using var context = new PetroleumBusinessDBContext();
+            List<News> model = context.News.ToList();
             try
             {
-                using (var context = new PetroleumBusinessDBContext())
+                switch (sortBy)
                 {
-                    n = context.News.FirstOrDefault(x => x.NewsID == id);
+                    case "name":
+                        model = model.OrderBy(o => o.Title).ToList();
+                        break;
+                    case "namedesc":
+                        model = model.OrderByDescending(o => o.Title).ToList();
+                        break;
+                    case "id":
+                        model = model.OrderBy(o => o.NewsID).ToList();
+                        break;
+                    case "iddesc":
+                        model = model.OrderByDescending(o => o.NewsID).ToList();
+                        break;
+                    default:
+                        break;
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return model;
+        }
+
+        public News GetNewsById(int id)
+        {
+            News n = null;
+            try
+            {
+                using var context = new PetroleumBusinessDBContext();
+                n = context.News.FirstOrDefault(k => k.NewsID == id);
             }
             catch (Exception ex)
             {
@@ -42,44 +71,59 @@ namespace DataAccess
             }
             return n;
         }
-        public static List<News> GetAllNews()
+
+        public IEnumerable<News> GetNewsBySearchName(string name, string sortBy)
         {
-            var list = new List<News>();
+            var context = new PetroleumBusinessDBContext();
+            List<News> model = context.News.ToList();
+
             try
             {
-                using (var context = new PetroleumBusinessDBContext())
+                if (!String.IsNullOrEmpty(name))
                 {
-                    list = context.News.ToList();
+                    model = model.Where(x => x.Title.ToLower().Contains(name)).ToList();
                 }
-            } catch (Exception ex)
+                switch (sortBy)
+                {
+                    case "name":
+                        model = model.OrderBy(o => o.Title).ToList();
+                        break;
+                    case "namedesc":
+                        model = model.OrderByDescending(o => o.Title).ToList();
+                        break;
+                    case "id":
+                        model = model.OrderBy(o => o.NewsID).ToList();
+                        break;
+                    case "iddesc":
+                        model = model.OrderByDescending(o => o.NewsID).ToList();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return list;
+            return model;
         }
-        public static void SaveNews(News n)
+
+        // Add News
+        public void InsertNews(News n)
         {
+
             try
             {
-                using (var context = new PetroleumBusinessDBContext())
+                News _n = GetNewsById(n.NewsID);
+                if (_n == null)
                 {
+                    using var context = new PetroleumBusinessDBContext();
                     context.News.Add(n);
                     context.SaveChanges();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        public static void UpdateNews(News n)
-        {
-            try
-            {
-                using (var context = new PetroleumBusinessDBContext())
+                else
                 {
-                    context.Entry<News>(n).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                    context.SaveChanges();
+                    throw new Exception("This News is already exist.");
                 }
             }
             catch (Exception ex)
@@ -87,15 +131,22 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
-        public static void DeleteNews(News n)
+        // Edit News
+        public void EditNews(News n)
         {
+
             try
             {
-                using (var context = new PetroleumBusinessDBContext())
+                News _n = GetNewsById(n.NewsID);
+                if (_n != null)
                 {
-                    var n1 = context.News.SingleOrDefault(x => x.NewsID == n.NewsID);
-                    context.News.Remove(n1);
+                    using var context = new PetroleumBusinessDBContext();
+                    context.News.Update(n);
                     context.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("This News does not already exist.");
                 }
             }
             catch (Exception ex)
@@ -103,5 +154,112 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             }
         }
+
+        public void DeleteNews(int id)
+        {
+            try
+            {
+                News _n = GetNewsById(id);
+                if (_n != null)
+                {
+                    using var context = new PetroleumBusinessDBContext();
+                    context.News.Remove(_n);
+                    context.SaveChanges();
+                }
+                else
+                {
+                    throw new Exception("This News does not already exist.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*        public static List<News> GetNewsList()
+                {
+                    var list = new List<News>();
+                    try
+                    {
+                        using (var context = new PetroleumBusinessDBContext())
+                        {
+                            list = context.News.ToList();
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    };
+                    return list;
+                }
+
+                public static News FindNewsById(int id)
+                {
+                    News n = new News();
+                    try
+                    {
+                        using (var context = new PetroleumBusinessDBContext())
+                        {
+                            n = context.News.FirstOrDefault(x => x.NewsID == id);
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                    return n;
+                }
+
+                public static void InsertNews(News n)
+                {
+                    try
+                    {
+                        using (var context = new PetroleumBusinessDBContext())
+                        {
+                            context.News.Add(n);
+                            context.SaveChanges();
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+
+                public static void EditNews(News n)
+                {
+                    try
+                    {
+                        using (var context = new PetroleumBusinessDBContext())
+                        {
+                            context.Entry<News>(n).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                            context.SaveChanges();
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }
+
+                public static void DeleteNews(News n)
+                {
+                    try
+                    {
+                        using (var context = new PetroleumBusinessDBContext())
+                        {
+                            var _n = context.News.SingleOrDefault(x => x.NewsID == n.NewsID);
+                            context.News.Remove(_n);
+                            context.SaveChanges();
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                }*/
     }
 }

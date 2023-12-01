@@ -1,4 +1,5 @@
-﻿using ObjectBussiness;
+﻿using Microsoft.EntityFrameworkCore;
+using ObjectBussiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +27,21 @@ namespace DataAccess
             }
         }
 
+        //Get News Category
         public static List<NewsCategory> GetNewsCategories()
         {
             var list = new List<NewsCategory>();
             try
             {
-                using( var context = new PetroleumBusinessDBContext())
+                using (var context = new PetroleumBusinessDBContext())
                 {
                     list = context.NewsCategories.ToList();
                 };
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
-            }
+            };
             return list;
         }
     }

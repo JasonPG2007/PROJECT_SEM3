@@ -1,33 +1,27 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
-using System.Net.Http.Headers;
-using System.Text.Json;
+using Repository;
+using X.PagedList;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class PostController : Controller
     {
-        private readonly HttpClient _httpClient = null;
-        private string NewsApiUrl = "";
-        public PostController()
+        INewsRepository _newsRepository = null;
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public PostController(IWebHostEnvironment webHostEnvironment)
         {
-            _httpClient = new HttpClient();
-            var contentType = new MediaTypeWithQualityHeaderValue("application/json");
-            _httpClient.DefaultRequestHeaders.Accept.Add(contentType);
-            NewsApiUrl = "https://localhost:7274/api/News";
+            _newsRepository = new NewsRepository();
+            this.webHostEnvironment = webHostEnvironment;
         }
         // GET: PostController
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public ActionResult Index(string searchString, int? page, string sortBy)
         {
-            HttpResponseMessage res = await _httpClient.GetAsync(NewsApiUrl);
-            string strData = await res.Content.ReadAsStringAsync();
-            var option = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-            List<News> listNews = JsonSerializer.Deserialize<List<News>>(strData, option);
-            return View(listNews);
+            var _newsList = _newsRepository.GetNewsByName(searchString is null ? null : searchString.ToLower(), sortBy).ToPagedList(page ?? 1, 5);
+            return View(_newsList);
         }
 
         // GET: PostController/Details/5
@@ -45,99 +39,109 @@ namespace WebMVC.Areas.Admin.Controllers
         // POST: PostController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(News n)
+        public ActionResult Create(News n)
         {
-            if(ModelState.IsValid)
+            try
             {
-                string strData = JsonSerializer.Serialize(n);
-                var contentData = new StringContent(strData, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage res = await _httpClient.PostAsync(NewsApiUrl, contentData);
-                if (res.IsSuccessStatusCode)
+                if (ModelState.IsValid)
                 {
-                    TempData["Message"] = "Post inserted successfully";
+                    _newsRepository.InsertNews(n);
+                    TempData["SuccessMessage"] = "News created successfully";
                     return RedirectToAction(nameof(Index));
                 }
                 else
                 {
-                    TempData["Message"] = "Error while call Web API";
+                    TempData["ErrorMessage"] = "New creation failed";
                 }
             }
-            return View();
+            catch (Exception ex)
+            {
+
+            }
+            return View(n);
         }
 
         // GET: PostController/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public ActionResult Edit(int id)
         {
-            HttpResponseMessage res = await _httpClient.GetAsync($"{NewsApiUrl}/{id}");
-            if(res.IsSuccessStatusCode)
-            {
-                string strData = await res.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                };
-                News n = JsonSerializer.Deserialize<News>(strData, options);
-                return View(n);
-            }
-            return View();
+            var n = _newsRepository.GetNewsById(id);
+            return View(n);
         }
 
         // POST: PostController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, News n)
+        public ActionResult Edit(int id, News n)
         {
-            if(ModelState.IsValid)
+            try
             {
-                string strData = JsonSerializer.Serialize(n);
-                var contentData = new StringContent(strData, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage res = await _httpClient.PutAsync($"{NewsApiUrl}/{id}", contentData);
-                if (res.IsSuccessStatusCode)
-                {
-                    TempData["Message"] = "Post updated successfully";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    TempData["Message"] = "Error while call Web API";
-                }
+                _newsRepository.EditNews(n);
+                TempData["Message"] = "Updated successfully";
+                return RedirectToAction(nameof(Index));
             }
-            return View(n);
+            catch
+            {
+                return View();
+            }
         }
 
         // GET: PostController/Delete/5
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public JsonResult DeleteId(int id)
         {
-            HttpResponseMessage res = await _httpClient.GetAsync($"{NewsApiUrl}/{id}");
-            if (res.IsSuccessStatusCode)
+            try
             {
-                string strData = await res.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
+                var record = _newsRepository.GetNewsById(id);
+                if (record == null)
                 {
-                    PropertyNameCaseInsensitive = true
-                };
-                News n = JsonSerializer.Deserialize<News>(strData, options);
-                return View(n);
+                    return Json(new { success = false, message = "Newsletter not found" });
+                }
+                _newsRepository.DeleteNews(id);
+                TempData["Message"] = "Deleted successfully";
+                return Json(new
+                {
+                    status = true
+                });
             }
-            return View();
+            catch (Exception ex)
+            {
+                return Json(new {success = false, message = ex.Message});
+            }
         }
 
         // POST: PostController/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
+        public ActionResult DeleteConfirm(int id)
         {
-            HttpResponseMessage res = await _httpClient.DeleteAsync($"{NewsApiUrl}/{id}");
-            if (res.IsSuccessStatusCode)
+            try
             {
-                TempData["Message"] = "Post deleted successfully";
+                _newsRepository.DeleteNews(id);
+                TempData["Message"] = "Deleted successfully";
                 return RedirectToAction(nameof(Index));
             }
-            else
+            catch
             {
-                TempData["Message"] = "Error while call Web API";
+                return View();
             }
-            return RedirectToAction(nameof(Index));
+        }
+
+        public JsonResult ListName(string _n)
+        {
+            if (!string.IsNullOrEmpty(_n))
+            {
+                var data = _newsRepository.GetNewsByName(_n.ToLower(), "name");
+                var responseData = data.Select(nn => nn.Title).ToList();
+                return Json(new
+                {
+                    data = responseData,
+                    status = true
+                });
+            }
+            return Json(new
+            {
+                status = false
+            });
         }
     }
 }

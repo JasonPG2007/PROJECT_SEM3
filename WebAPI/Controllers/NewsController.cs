@@ -10,21 +10,28 @@ namespace WebAPI.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
-        private INewsRepository _newsRepository = new NewsRepository();
-
+        private INewsRepository _repository = new NewsRepository();
         // GET: api/<NewsController>
         [HttpGet]
-        public ActionResult<IEnumerable<News>> GetAllNews() => _newsRepository.GetAllNews();
+        public ActionResult<IEnumerable<News>> GetNewsList(string sortBy)
+        {
+            // Implement sorting logic in your repository based on the 'sortBy' parameter.
+            IEnumerable<News> newsList = _repository.GetNewsList(sortBy);
+
+            // Return the sorted list as an ActionResult.
+            return Ok(newsList);
+        }
 
         // GET api/<NewsController>/5
         [HttpGet("{id}")]
         public ActionResult<News> GetNewsById(int id)
         {
-            var news = _newsRepository.GetNewsById(id);
+            var news = _repository.GetNewsById(id);
             if (news == null)
             {
-                return NotFound();
+                return NotFound(); // Trả về lỗi 404 nếu không tìm thấy sản phẩm
             }
+
             return news;
         }
 
@@ -34,25 +41,26 @@ namespace WebAPI.Controllers
         {
             try
             {
-                _newsRepository.SaveNews(n);
+                _repository.InsertNews(n);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating news record");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error creating new News record");
             }
         }
 
         // PUT api/<NewsController>/5
         [HttpPut("{id}")]
-        public IActionResult UpdateNews(int id, News n)
+        public IActionResult EditNews(int id, News n)
         {
-            var temp = _newsRepository.GetNewsById(id);
+            var temp = _repository.GetNewsById(id);
             if (temp == null)
             {
                 return NotFound();
             }
-            _newsRepository.UpdateNews(n);
+            _repository.InsertNews(n);
             return NoContent();
         }
 
@@ -60,17 +68,10 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteNews(int id)
         {
-            try
-            {
-                var temp = _newsRepository.GetNewsById(id);
-                if (temp == null) { return NotFound(); }
-                _newsRepository.DeleteNews(temp);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error delete news record");
-            }
+            var temp = _repository.GetNewsById(id);
+            if (temp == null) { return NotFound(); }
+            _repository.DeleteNews(id);
+            return NoContent();
         }
     }
 }
