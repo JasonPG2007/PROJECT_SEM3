@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace ObjectBussiness
+{
+    public class Question
+    {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Question ID")]
+        public int QuestionID { get; set; }
+        [Display(Name = "Exam ID")]
+        public int ExamID { get; set; }
+        [Display(Name = "Question name")]
+        public string QuestionName { get; set; }
+        [Display(Name = "Answer A")]
+        public string AnswerA { get; set; }
+        [Display(Name = "Answer B")]
+        public string AnswerB { get; set; }
+        [Display(Name = "Answer C")]
+        public string AnswerC { get; set; }
+        [Display(Name = "Answer D")]
+        public string AnswerD { get; set; }
+        [Display(Name = "Correct answer")]
+        public string CorrectAnswer { get; set; }
+        public double Point { get; set; }
+        public string? Note { get; set; }
+        [Display(Name = "Day created")]
+        public DateTime DateMake { get; set; }
+        [JsonIgnore]
+        public virtual Exam? Exam { get; set; }
+    }
+}

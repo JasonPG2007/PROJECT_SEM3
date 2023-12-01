@@ -1,0 +1,68 @@
+﻿@model IEnumerable<ObjectBussiness.Exam>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a href="@Url.Action("Create","Exam")">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCreateTest)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeBegin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeDelay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>Control</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExamID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreateTest)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeBegin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeEnd)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeDelay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Do exam", "StartQuiz", "Question", new { id = item.ExamID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

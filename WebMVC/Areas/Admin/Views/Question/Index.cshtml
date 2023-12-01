@@ -1,0 +1,89 @@
+﻿@model IEnumerable<ObjectBussiness.Question>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a href="@Url.Action("Create","Exam")">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.QuestionID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExamID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnswerD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorrectAnswer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Point)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateMake)
+            </th>
+            <th>Control</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuestionID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExamID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerA)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnswerD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Note)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Point)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateMake)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Do exam", "StartQuiz", "Question", new { id = item.ExamID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
