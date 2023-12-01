@@ -17,8 +17,6 @@ namespace ObjectBussiness
         public string Contents { get; set; }
         public string ShortDescription { get; set; }
         public string Picture { get; set; }
-        public bool Visible { get; set; }
-        //Person create news
         public DateTime DateSubmitted { get; set; }
         public int AccountID { get; set; }
         public int CategoryID { get; set; }
