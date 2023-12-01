@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using X.PagedList;
 using static System.Net.WebRequestMethods;
 
 namespace WebMVC.Areas.Admin.Controllers
@@ -40,13 +41,15 @@ namespace WebMVC.Areas.Admin.Controllers
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                Question question = JsonSerializer.Deserialize<Question>(data, options);
+                List<Question> question = JsonSerializer.Deserialize<List<Question>>(data, options);
+                if (question.Count == 0)
+                {
+                    ViewBag.Message = "There aren't any questions!";
+                }
+                ViewBag.Count = question.Count();
                 return View(question);
             }
-            else
-            {
-                return View();
-            }
+            return View();
         }
         [HttpPost]
         public async Task<ActionResult> StartQuiz(Question question)
@@ -102,19 +105,37 @@ namespace WebMVC.Areas.Admin.Controllers
         }
 
         // GET: QuestionController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{ApiUrl}/{id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                Question question = JsonSerializer.Deserialize<Question>(data, options);
+                return View(question);
+            }
+            return NotFound();
         }
 
         // POST: QuestionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Question question)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var data = JsonSerializer.Serialize(question);
+                var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage responseMessage = await httpClient.PutAsync($"{ApiUrl}/{id}", typeData);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                throw new ArgumentException("Edit failed!");
             }
             catch (Exception ex)
             {

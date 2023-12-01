@@ -34,5 +34,7 @@ namespace ObjectBussiness
         public DateTime DateMake { get; set; }
         [JsonIgnore]
         public virtual Exam? Exam { get; set; }
+        [NotMapped]
+        public string? SelectedAnswer { get; set; }
     }
 }
