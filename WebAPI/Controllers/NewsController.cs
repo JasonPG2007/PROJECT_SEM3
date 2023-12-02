@@ -13,14 +13,8 @@ namespace WebAPI.Controllers
         private INewsRepository _repository = new NewsRepository();
         // GET: api/<NewsController>
         [HttpGet]
-        public ActionResult<IEnumerable<News>> GetNewsList(string sortBy)
-        {
-            // Implement sorting logic in your repository based on the 'sortBy' parameter.
-            IEnumerable<News> newsList = _repository.GetNewsList(sortBy);
-
-            // Return the sorted list as an ActionResult.
-            return Ok(newsList);
-        }
+        [HttpGet]
+        public ActionResult<IEnumerable<News>> GetNewsList() => _repository.GetNewsList();
 
         // GET api/<NewsController>/5
         [HttpGet("{id}")]
@@ -37,7 +31,7 @@ namespace WebAPI.Controllers
 
         // POST api/<NewsController>
         [HttpPost]
-        public IActionResult PostNews(News n)
+        public IActionResult InsertNews(News n)
         {
             try
             {
@@ -60,17 +54,20 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
-            _repository.InsertNews(n);
+            _repository.EditNews(n);
             return NoContent();
         }
 
         // DELETE api/<NewsController>/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteNews(int id)
+        public IActionResult Delete(int id)
         {
             var temp = _repository.GetNewsById(id);
-            if (temp == null) { return NotFound(); }
-            _repository.DeleteNews(id);
+            if (temp == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteNews(temp);
             return NoContent();
         }
     }

@@ -11,11 +11,17 @@
 <div class="row">
     <div class="col-md-4">
 
-        @using (Html.BeginForm("Edit", "Post", FormMethod.Post))
+        @using (Html.BeginForm("Edit", "News", FormMethod.Post))
         {
-            @Html.HiddenFor(model=>model.NewsID)
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="NewsID" class="control-label"></label>
+                @Html.EditorFor(model=>model.NewsID,new {htmlAttributes= new{@class="form-control"} })
+                <span asp-validation-for="NewsID" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
                 @Html.EditorFor(model=>model.Title,new {htmlAttributes= new{@class="form-control"} })
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
@@ -39,9 +45,9 @@
             </div>
             <br />
             <div class="form-group">
-                <label asp-for="DateSubmitted" class="control-label"></label>
-                @Html.EditorFor(model=>model.DateSubmitted,new {htmlAttributes= new{@class="form-control"} })
-                <span asp-validation-for="DateSubmitted" class="text-danger"></span>
+                <label asp-for="AccountID" class="control-label"></label>
+                @Html.EditorFor(model=>model.AccountID,new {htmlAttributes= new{@class="form-control"} })
+                <span asp-validation-for="AccountID" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group">
@@ -51,20 +57,15 @@
             </div>
             <br />
             <div class="form-group">
-                <label asp-for="AccountID" class="control-label"></label>
-                @Html.EditorFor(model=>model.AccountID,new {htmlAttributes= new{@class="form-control"} })
-                <span asp-validation-for="AccountID" class="text-danger"></span>
-            </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Update" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         }
     </div>
 </div>
+<br />
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Back To List","Index","News",null, new {@class="btn btn-danger"})
 </div>
 @section Scripts {
     @{
