@@ -12,8 +12,8 @@ using ObjectBussiness;
 namespace ObjectBussiness.Migrations
 {
     [DbContext(typeof(PetroleumBusinessDBContext))]
-    [Migration("20231120005516_Initial")]
-    partial class Initial
+    [Migration("20231129151911_T")]
+    partial class T
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -188,9 +188,15 @@ namespace ObjectBussiness.Migrations
             modelBuilder.Entity("ObjectBussiness.News", b =>
                 {
                     b.Property<int>("NewsID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NewsID"));
+
                     b.Property<int>("AccountID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Contents")
@@ -200,7 +206,14 @@ namespace ObjectBussiness.Migrations
                     b.Property<DateTime>("DateSubmitted")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("NewsCategoryCategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Picture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortContents")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -212,7 +225,38 @@ namespace ObjectBussiness.Migrations
 
                     b.HasIndex("AccountID");
 
+                    b.HasIndex("NewsCategoryCategoryID");
+
                     b.ToTable("News");
+                });
+
+            modelBuilder.Entity("ObjectBussiness.NewsCategory", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("NewsCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryID = 1,
+                            CategoryName = "Gasoline Prices"
+                        },
+                        new
+                        {
+                            CategoryID = 2,
+                            CategoryName = "Recruitment Jobs"
+                        });
                 });
 
             modelBuilder.Entity("ObjectBussiness.Question", b =>
@@ -379,7 +423,13 @@ namespace ObjectBussiness.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ObjectBussiness.NewsCategory", "NewsCategory")
+                        .WithMany("News")
+                        .HasForeignKey("NewsCategoryCategoryID");
+
                     b.Navigation("Account");
+
+                    b.Navigation("NewsCategory");
                 });
 
             modelBuilder.Entity("ObjectBussiness.Question", b =>
@@ -458,6 +508,11 @@ namespace ObjectBussiness.Migrations
             modelBuilder.Entity("ObjectBussiness.History", b =>
                 {
                     b.Navigation("ResultCandidates");
+                });
+
+            modelBuilder.Entity("ObjectBussiness.NewsCategory", b =>
+                {
+                    b.Navigation("News");
                 });
 
             modelBuilder.Entity("ObjectBussiness.Role", b =>

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ObjectBussiness.News>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<header class="panel-heading">
+    News Management
+</header>
+
+<p>
+    @Html.ActionLink("Creat Post","Create","Post", null, new {@class="btn btn-success"})
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @{
+                    var sortBy = Context.Request.Query["sortby"] == "id" ? "iddesc" : "id";
+                }
+                <a href="@Url.Action("Index","Post",new {sortBy=sortBy,SearchString=@Context.Request.Query["SearchString"]})"></a>
+                Post ID
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Contents
+            </th>
+            <th>
+                Short Content
+            </th>
+            <th>
+                Image
+            </th>
+            <th>
+               Date Publish
+            </th>
+            <th>
+                Catetory ID
+            </th>
+            <th>
+                Account Creat
+            </th>
+            <th>Setting</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+             <td>
+                 @Html.DisplayFor(modelItem => item.NewsID)
+             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contents)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShortContents)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Picture)
+            </td>
+            <td>
+                 @Convert.ToDateTime(item.DateSubmitted).ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryID)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.AccountID)
+            </td>
+            <td>
+                    <input type="checkbox" name="SelectedCatDelete" value="@item.NewsID">
+                    @Html.ActionLink("Update", "Edit", new {  id=item.NewsID  },new {@class="text-success"}) |
+                    @Html.ActionLink("Remove", "Delete", new {id=item.NewsID },new {@class="text-danger"})
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
