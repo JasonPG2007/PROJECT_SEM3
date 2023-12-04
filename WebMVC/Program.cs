@@ -22,7 +22,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
       name: "areas",
-      pattern: "{area=Admin}/{controller=Exam}/{action=ExamDashboard}/{id?}"
+      pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}"
 );
 app.MapControllerRoute(
     name: "default",

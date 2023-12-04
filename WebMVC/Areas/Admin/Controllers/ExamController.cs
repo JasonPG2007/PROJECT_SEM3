@@ -29,16 +29,16 @@ namespace WebMVC.Areas.Admin.Controllers
             List<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options);
             return View(listExams);
         }
-        public async Task<ActionResult> ExamDashboard(string id)
+        public async Task<ActionResult> ExamDashboard(int id)
         {
-            if (Convert.ToInt32(id) != 0)
+            if (id != 0)
             {
                 HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/ExamAPI/GetRoom/{id}");
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     return RedirectToAction("StartQuiz", "Question", new { id = id });
                 }
-                TempData["msg"] = "Room not found...";
+                TempData["msg"] = "Room not found.";
                 return View();
             }
             else
