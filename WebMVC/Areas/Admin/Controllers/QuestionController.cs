@@ -21,8 +21,8 @@ namespace WebMVC.Areas.Admin.Controllers
         // GET: QuestionController
         public async Task<ActionResult> Index()
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
-            var data = await responseMessage.Content.ReadAsStringAsync();
+			HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
+			var data = await responseMessage.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
