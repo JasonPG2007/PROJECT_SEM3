@@ -24346,7 +24346,7 @@ h6 {
 
 @media (min-width:768px) {
     .templateux-navbar {
-        position: absolute;
+        /*position: absolute;*/
         background-color: transparent;
         padding: 40px 0
     }
