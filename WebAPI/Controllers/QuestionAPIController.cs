@@ -11,9 +11,13 @@ namespace WebAPI.Controllers
     public class QuestionAPIController : ControllerBase
     {
         private readonly IQuestionRepository questionRepository;
-        private Queue<Question> q = new Queue<Question>();
+        private readonly Queue<Question> q = new Queue<Question>();
+        private readonly IExamRepository examRepository;
+        PetroleumBusinessDBContext db;
         public QuestionAPIController()
         {
+            db = new PetroleumBusinessDBContext();
+            examRepository = new ExamRepository();
             questionRepository = new QuestionRepository();
         }
         // GET: api/<QuestionAPIController>
@@ -65,6 +69,13 @@ namespace WebAPI.Controllers
             {
                 return NotFound();
             }
+        }
+        [Route("GetExamID")]
+        [HttpGet]
+        public IEnumerable<int> GetExamID()
+        {
+            var rs = db.Exams.Select(e=>e.ExamID).ToList();
+            return rs;
         }
         // POST api/<QuestionAPIController>
         [HttpPost]

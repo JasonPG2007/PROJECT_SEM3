@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ObjectBussiness;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -70,8 +71,17 @@ namespace WebMVC.Areas.Admin.Controllers
         }
 
         // GET: QuestionController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            HttpResponseMessage responseMessage = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetExamID");
+            var data = await responseMessage.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<int> listExams = JsonSerializer.Deserialize<List<int>>(data, options);
+            List<SelectListItem> selectList = listExams.Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }).ToList();
+            ViewBag.Items = selectList;
             return View();
         }
 
