@@ -26,6 +26,8 @@ namespace DataAccess
                 }
             }
         }
+
+        ////------------- MVC ----------------------//////
         /*        public IEnumerable<News> GetNewsList(string sortBy)
                 {
                     using var context = new PetroleumBusinessDBContext();
@@ -178,7 +180,7 @@ namespace DataAccess
                 }*/
 
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////---2-----//////////////////////////////////////////////////////////////////
         public static List<News> GetNewsList()
         {
             var list = new List<News>();

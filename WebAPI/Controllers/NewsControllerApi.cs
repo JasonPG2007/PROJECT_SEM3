@@ -8,11 +8,18 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class NewsControllerApi : ControllerBase
     {
+        INewsRepository _newsRepository = null;
+        private readonly IWebHostEnvironment webHostEnvironment;
         private INewsRepository _repository = new NewsRepository();
+
+        public NewsControllerApi(IWebHostEnvironment webHostEnvironment)
+        {
+            _newsRepository = new NewsRepository();
+            this.webHostEnvironment = webHostEnvironment;
+        }
         // GET: api/<NewsController>
-        [HttpGet]
         [HttpGet]
         public ActionResult<IEnumerable<News>> GetNewsList() => _repository.GetNewsList();
 
@@ -35,6 +42,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+
                 _repository.InsertNews(n);
                 return NoContent();
             }
@@ -70,5 +78,6 @@ namespace WebAPI.Controllers
             _repository.DeleteNews(temp);
             return NoContent();
         }
+
     }
 }

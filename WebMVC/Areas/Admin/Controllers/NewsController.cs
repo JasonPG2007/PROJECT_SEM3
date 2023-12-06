@@ -13,13 +13,12 @@ namespace WebMVC.Areas.Admin.Controllers
     {
         private readonly HttpClient _httpClient = null;
         private string NewsApiUrl = "";
-        public NewsController(IWebHostEnvironment webHostEnvironment)
+        public NewsController()
         {
             _httpClient = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _httpClient.DefaultRequestHeaders.Accept.Add(contentType);
-            NewsApiUrl = "https://localhost:7274/api/News";
-            //Upload file          
+            NewsApiUrl = "https://localhost:7274/api/News";      
         }
         // GET: NewsController
         public async Task<IActionResult> Index()

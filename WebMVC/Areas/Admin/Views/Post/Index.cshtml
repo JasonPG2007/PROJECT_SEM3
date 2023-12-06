@@ -1,26 +1,27 @@
-﻿@model IEnumerable<ObjectBussiness.News>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<ObjectBussiness.News>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<header class="panel-heading">
-    News Management
-</header>
+<h1>News Management</h1>
+<br />
 
 <p>
-    @Html.ActionLink("Creat Post","Create","Post", null, new {@class="btn btn-success"})
+    @Html.ActionLink("Creat News","Create","Post", null, new {@class="btn btn-success"})
 </p>
-<table class="table">
+ @using (Html.BeginForm("Index", "Post", FormMethod.Get))
+        {
+
+            <div class="form-group">
+<table class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>
-                @{
-                    var sortBy = Context.Request.Query["sortby"] == "id" ? "iddesc" : "id";
-                }
-                <a href="@Url.Action("Index","Post",new {sortBy=sortBy,SearchString=@Context.Request.Query["SearchString"]})"></a>
-                Post ID
+                PostID
             </th>
             <th>
                 Title
@@ -35,7 +36,7 @@
                 Image
             </th>
             <th>
-               Date Publish
+                Date Publish
             </th>
             <th>
                 Catetory ID
@@ -47,39 +48,133 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-             <td>
-                 @Html.DisplayFor(modelItem => item.NewsID)
-             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Contents)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShortContents)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Picture)
-            </td>
-            <td>
-                 @Convert.ToDateTime(item.DateSubmitted).ToString("dd/MM/yyyy")
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryID)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewsID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.Raw( item.Contents)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShortContents)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Picture)
+                </td>
+                <td>
+                    @Convert.ToDateTime(item.DateSubmitted).ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryID)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.AccountID)
-            </td>
-            <td>
-                    <input type="checkbox" name="SelectedCatDelete" value="@item.NewsID">
+                </td>
+                <td>
                     @Html.ActionLink("Update", "Edit", new {  id=item.NewsID  },new {@class="text-success"}) |
-                    @Html.ActionLink("Remove", "Delete", new {id=item.NewsID },new {@class="text-danger"})
-            </td>
-        </tr>
-}
+                     <a href="#" class="delete-link text-danger" data-id="@item.NewsID" data-confirm="Do you really want to delete it?" data-toggle="modal" data-target="#confirmModal">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+</div>
+<!-- Modal Delete  -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cannel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
 
+<!-- PageList  -->
+<div class="form-group">
+    @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page = page,
+    SearchString = @Context.Request.Query["SearchString"],sortby = @Context.Request.Query["sortby"]}),
+    new X.PagedList.Web.Common.PagedListRenderOptions {
+    LiElementClasses = new string[] {"page-item"},
+    PageClasses = new string[] { "page-link" }
+    })
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function DisplayProgressMessage(ctl, msg) {
+            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
+            event.preventDefault();
+            // Turn off the "Save" button and change text
+            $(ctl).prop("disabled", true).val(msg);
+            // Gray out background on page
+            $("body").addClass("submit-progress-bg");
+            // Wrap in setTimeout so the UI can update the spinners
+            $(".processing-preview").removeClass("hidden");
+            //submit the form.
+            setTimeout(function () {
+                $("form").submit();
+            }, 3000);
+            return true;
+        }
+
+        //Delete popup
+        $(document).on("click", ".delete-link", function (e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            var confirmMessage = $(this).data("confirm");
+
+            $("#confirmMessage").text(confirmMessage);
+            $("#confirmDelete").data("id", id); // Lưu trữ ID để sử dụng trong xử lý xóa
+
+            $("#confirmModal").modal("show");
+        });
+
+        $(document).on("click", "#confirmDelete", function (e) {
+            e.preventDefault();
+            var id = $(this).data("id");
+            //if (confirm($(this).data("confirm"))) {
+            $.ajax({
+                url: "/Admin/Post/DeleteId/" + id,
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                success: function (res) {
+                    if (res.status == true) {
+                        window.location.href = '/Admin/Post';
+                        //$("#getCodeModal").modal("toggle");
+                    }
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+            //}
+        });
+    </script>
+    <script>
+        var inputElements = document.querySelectorAll('.my-input');
+        Array.from(inputElements).forEach(function (element) {
+            new Cleave(element, {
+                numeral: true,
+                numeralDecimalScale: 4
+            });
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿/*using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
 using Repository;
@@ -45,6 +45,8 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    string uniqueFileName = UploadedFile(n);
+                    n.Picture = uniqueFileName;
                     _newsRepository.InsertNews(n);
                     TempData["SuccessMessage"] = "News created successfully";
                     return RedirectToAction(nameof(Index));
@@ -54,7 +56,7 @@ namespace WebMVC.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "New creation failed";
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -94,10 +96,11 @@ namespace WebMVC.Areas.Admin.Controllers
                 var record = _newsRepository.GetNewsById(id);
                 if (record == null)
                 {
-                    return Json(new { success = false, message = "Newsletter not found" });
+                    return Json(new { success = false, message = "Không tìm thấy bản ghi" });
                 }
                 _newsRepository.DeleteNews(id);
-                TempData["Message"] = "Deleted successfully";
+                TempData["Message"] = "Xoá thành công";
+                *//*return Json(new { success = true, id = id});*//*
                 return Json(new
                 {
                     status = true
@@ -105,7 +108,7 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new {success = false, message = ex.Message});
+                return Json(new { success = false, message = ex.Message });
             }
         }
 
@@ -117,13 +120,30 @@ namespace WebMVC.Areas.Admin.Controllers
             try
             {
                 _newsRepository.DeleteNews(id);
-                TempData["Message"] = "Deleted successfully";
+                TempData["Message"] = "Xoá thành công";
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
                 return View();
             }
+        }
+        // UploadedFile
+        private string UploadedFile(News n)
+        {
+            //string uniqueFileName = UploadedFile(hh);
+            //Save image to wwwroot/image
+            string wwwRootPath = webHostEnvironment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(n.ImageFile.FileName);
+            string extension = Path.GetExtension(n.ImageFile.FileName);
+            n.Picture = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+            string path = Path.Combine(wwwRootPath + "/Upload/Images/", fileName);
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                n.ImageFile.CopyTo(fileStream);
+            }
+            ViewBag.Picture = n.Picture;
+            return fileName;
         }
 
         public JsonResult ListName(string _n)
@@ -145,3 +165,4 @@ namespace WebMVC.Areas.Admin.Controllers
         }
     }
 }
+*/

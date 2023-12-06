@@ -55,12 +55,6 @@
             @Html.DisplayFor(model => model.AccountID)
         </dd>
     </dl>
-    <br />
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="NewsID" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <br />
-        @Html.ActionLink("Back To List","Index","News",null, new {@class="btn btn-success"})
-
-    </form>
+    
+    <a class="btn btn-danger" href="/Admin/Post">Back To List</a>
 </div>
