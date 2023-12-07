@@ -12,7 +12,7 @@ using ObjectBussiness;
 namespace ObjectBussiness.Migrations
 {
     [DbContext(typeof(PetroleumBusinessDBContext))]
-    [Migration("20231127094516_Initial")]
+    [Migration("20231207022242_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -106,6 +106,10 @@ namespace ObjectBussiness.Migrations
 
                     b.Property<DateTime>("DateCreateTest")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ExamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()

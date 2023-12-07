@@ -104,6 +104,10 @@ namespace ObjectBussiness.Migrations
                     b.Property<DateTime>("DateCreateTest")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("ExamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -79,8 +79,12 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<int> listExams = JsonSerializer.Deserialize<List<int>>(data, options);
-            List<SelectListItem> selectList = listExams.Select(e => new SelectListItem { Value = e.ToString(), Text = e.ToString() }).ToList();
+            List<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options);
+            List<SelectListItem> selectList = new List<SelectListItem>();
+            foreach (var item in listExams)
+            {
+                selectList.Add(new SelectListItem { Value = item.ExamID.ToString(), Text = item.ExamName });
+            }
             ViewBag.Items = selectList;
             return View();
         }
@@ -126,6 +130,19 @@ namespace WebMVC.Areas.Admin.Controllers
                     PropertyNameCaseInsensitive = true
                 };
                 Question question = JsonSerializer.Deserialize<Question>(data, options);
+                HttpResponseMessage responseMessageList = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetExamID");
+                var dataList = await responseMessageList.Content.ReadAsStringAsync();
+                var optionsList = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                List<Exam> questions = JsonSerializer.Deserialize<List<Exam>>(dataList, optionsList);
+                List<SelectListItem> selectListItems = new List<SelectListItem>();
+                foreach (var item in questions)
+                {
+                    selectListItems.Add(new SelectListItem { Value = item.ExamID.ToString(), Text = item.ExamName });
+                }
+                ViewBag.Items = selectListItems;
                 return View(question);
             }
             return NotFound();
@@ -154,19 +171,38 @@ namespace WebMVC.Areas.Admin.Controllers
         }
 
         // GET: QuestionController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{ApiUrl}/{id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                Question questions = JsonSerializer.Deserialize<Question>(data, options);
+                return View(questions);
+            }
+            return NotFound();
         }
 
         // POST: QuestionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return View();
+                }
             }
             catch (Exception ex)
             {

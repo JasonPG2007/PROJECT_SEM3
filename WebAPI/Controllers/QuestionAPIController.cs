@@ -72,9 +72,9 @@ namespace WebAPI.Controllers
         }
         [Route("GetExamID")]
         [HttpGet]
-        public IEnumerable<int> GetExamID()
+        public IEnumerable<object> GetExamID()
         {
-            var rs = db.Exams.Select(e=>e.ExamID).ToList();
+            var rs = db.Exams.Select(e => new { e.ExamID, e.ExamName }).ToList();
             return rs;
         }
         // POST api/<QuestionAPIController>

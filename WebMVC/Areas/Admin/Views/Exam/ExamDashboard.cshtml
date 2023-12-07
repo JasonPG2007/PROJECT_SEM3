@@ -10,13 +10,13 @@
         <br />
         @if (TempData["msg"] == null)
         {
-            <h1 style="text-align:center">Enter Room Number</h1>
+            <h1 style="text-align:center">Enter Room Code</h1>
         }
         else
         {
             <h1 style="text-align:center;color:red">@TempData["msg"]</h1>
         }
-        <input type="number" name="id" placeholder="Room Number..." class="form-control" required />
+        <input type="number" name="id" placeholder="Room Code..." class="form-control" required />
         <br />
         <br />
         <input type="submit" value="Submit" class="btn btn-danger btn-block" />

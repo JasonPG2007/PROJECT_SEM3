@@ -47,18 +47,6 @@ namespace WebMVC.Areas.Admin.Controllers
             }
 
         }
-        //[HttpPost]
-        //public async Task<ActionResult> ExamDashboard(int room)
-        //{
-        //    var data = JsonSerializer.Serialize(room);
-        //    var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-        //    HttpResponseMessage responseMessage = await httpClient.PostAsync("https://localhost:7274/api/ExamAPI/GetRoom", typeData);
-        //    if (responseMessage.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToAction("StartQuiz", "Question");
-        //    }
-        //    throw new ArgumentException("Room not found...");
-        //}
         // GET: ExamController/Details/5
         public ActionResult Details(int id)
         {
@@ -82,6 +70,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 {
                     Random random = new Random();
                     exam.ExamID = random.Next();
+                    exam.DateCreateTest = DateTime.Now;
                     var data = JsonSerializer.Serialize(exam);
                     var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
                     HttpResponseMessage responseMessage = await httpClient.PostAsync(ApiUrl, typeData);
@@ -104,19 +93,33 @@ namespace WebMVC.Areas.Admin.Controllers
         }
 
         // GET: ExamController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{ApiUrl}/{id}");
+            var data = await responseMessage.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+            Exam exam = JsonSerializer.Deserialize<Exam>(data, options);
+            return View(exam);
         }
 
         // POST: ExamController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, Exam exam)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var data = JsonSerializer.Serialize(exam);
+                var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage responseMessage = await httpClient.PutAsync($"{ApiUrl}/{id}", typeData);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                throw new ArgumentException("Update failed!");
             }
             catch (Exception ex)
             {

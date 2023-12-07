@@ -51,6 +51,7 @@ namespace ObjectBussiness.Migrations
                 columns: table => new
                 {
                     ExamID = table.Column<int>(type: "int", nullable: false),
+                    ExamName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreateTest = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TimeBegin = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TimeEnd = table.Column<DateTime>(type: "datetime2", nullable: false),
