@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
 using Repository;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
@@ -18,7 +19,7 @@ namespace WebMVC.Areas.Admin.Controllers
             _httpClient = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _httpClient.DefaultRequestHeaders.Accept.Add(contentType);
-            NewsApiUrl = "https://localhost:7274/api/News";      
+            NewsApiUrl = "https://localhost:7274/api/NewsControllerApi";      
         }
         // GET: NewsController
         public async Task<IActionResult> Index()
@@ -45,7 +46,7 @@ namespace WebMVC.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: NewsController/Create
+        /*// POST: NewsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(News n)
@@ -64,7 +65,61 @@ namespace WebMVC.Areas.Admin.Controllers
                 {
                     TempData["Message"] = "Error while call Web API";
                 }
+
             }
+            return View(n);
+        }*/
+
+        // POST: NewsController/Create API//////////////////////////////////////////////////////
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(NewsImage n, IFormFile imageFile)
+        {
+            if (ModelState.IsValid)
+            {
+                News news = new News
+                {
+                    Title = n.Title,
+                    Contents = n.Contents,
+                    ShortContents = n.ShortContents,
+                    DateSubmitted = n.DateSubmitted,
+                    AccountID = n.AccountID,
+                    CategoryID = n.CategoryID
+                };
+
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", imageFile.FileName);
+                    using (var stream = System.IO.File.Create(path))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+                    news.Picture = "/images/" + imageFile.FileName;
+                }
+
+                // Send data to API
+                string strData = JsonSerializer.Serialize(news);
+                var contentData = new StringContent(strData, System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage res = await _httpClient.PostAsync(NewsApiUrl, contentData);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    // Clear the uploaded file if successful
+                   /* if (imageFile != null && imageFile.Length > 0)
+                    {
+                        System.IO.File.Delete(path);
+                    }*/
+
+                    TempData["Message"] = "Post inserted successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    // Log error or handle API response
+                    TempData["Message"] = $"Error while calling Web API: {res.StatusCode}";
+                }
+            }
+
             return View(n);
         }
 

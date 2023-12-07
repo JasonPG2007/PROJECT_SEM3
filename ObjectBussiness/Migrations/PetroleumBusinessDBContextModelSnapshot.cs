@@ -197,7 +197,6 @@ namespace ObjectBussiness.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Contents")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateSubmitted")
@@ -207,15 +206,12 @@ namespace ObjectBussiness.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Picture")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShortContents")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("NewsID");

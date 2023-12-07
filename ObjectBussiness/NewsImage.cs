@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace ObjectBussiness
 {
-    public class News
+    public class NewsImage
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NewsID { get; set; }
@@ -22,19 +20,12 @@ namespace ObjectBussiness
         public string? Contents { get; set; }
         public string? ShortContents { get; set; }
         [Display(Name = "Image News")]
-        public string? Picture { get; set; }
         public DateTime DateSubmitted { get; set; }
         [Display(Name = "Account ID")]
         public int AccountID { get; set; }
         [Display(Name = "Category ID")]
         public int CategoryID { get; set; }
-        [JsonIgnore]
-        public virtual Account? Account { get; set; }
-        [JsonIgnore]
-        public virtual NewsCategory? NewsCategory { get; set; }
 
-       /* [NotMapped]
-        [DisplayName("Upload File")]
-        public IFormFile ImageFile { get; set; }*/
+        public IFormFile ImageFile { get; set; }
     }
 }

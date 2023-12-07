@@ -12,7 +12,7 @@
 <div class="row">
     <div class="col-md-4">
 
-        @using (Html.BeginForm("Edit", "Post", FormMethod.Post))
+        @using (Html.BeginForm("Edit", "News", FormMethod.Post))
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -43,7 +43,7 @@
                 <label asp-for="Picture" class="control-label"></label>
                 @Html.EditorFor(model=>model.Picture,new {htmlAttributes= new{@class="form-control"} })
                 <img id="preview" src="@Url.Content(ViewBag.Picture==null?"~/adminAssets/images/upload.png":"~/Upload/images/"+ViewBag.Picture)" class="rounded-circle" height="40" width="40" />
-                @Html.EditorFor(model=>model.ImageFile,new {htmlAttributes= new{@class="custom-file-input"}})
+                @*@Html.EditorFor(model=>model.ImageFile,new {htmlAttributes= new{@class="custom-file-input"}})*@
             </div>
             <br />
             <div class="form-group">
@@ -67,50 +67,8 @@
 <br />
 
 <div>
-    @Html.ActionLink("Back To List","Index","Post",null, new {@class="btn btn-danger"})
+    @Html.ActionLink("Back To List","Index","News",null, new {@class="btn btn-danger"})
 </div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-    <script>
-        function DisplayProgressMessage(ctl, msg) {
-            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
-            event.preventDefault();
-            // Turn off the "Save" button and change text
-            $(ctl).prop("disabled", true).val(msg);
-            // Gray out background on page
-            $("body").addClass("submit-progress-bg");
-            // Wrap in setTimeout so the UI can update the spinners
-            $(".processing-preview").removeClass("hidden");
-            //submit the form.
-            setTimeout(function () {
-                $("form").submit();
-                $(".processing-preview").addClass("hidden");
-                $("body").removeClass("submit-progress-bg");
-                $(ctl).prop("disabled", false).val("Creat");
-            }, 1);
-            return false;
-        }
-        var cleaveOptions = {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            numeralPositiveOnly: true
-        };
-    </script>
-    <script>
-        ImageFile.onchange = evt => {
-
-            const [file] = ImageFile.files
-
-            if (file) {
-
-                preview.src = URL.createObjectURL(file);
-            }
-        }
-    </script>
-}
 
 <!--Kích hoạt phần tử #Content là Editor HTML -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -133,4 +91,5 @@
         ]
     });
 </script>
+
 

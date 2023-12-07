@@ -1,18 +1,17 @@
-﻿@model ObjectBussiness.News
+﻿@model ObjectBussiness.NewsImage
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create News</h1>
-<div class="processing-preview hidden">
-</div>
+<h1>Create</h1>
+<br />
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @using (Html.BeginForm("Create", "Post", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Create", "News", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "alert alert-block alert-danger fade in" })
@@ -37,11 +36,10 @@
             </div>
             <br />
             <div class="form-group">
-        <label asp-for="Picture" class="control-label"> Image Post</label>
-                @Html.EditorFor(model=>model.Picture,new {htmlAttributes= new{@class="form-control", @placeholder="Pleate enter Url images"} })
-                <img id="preview" src="@Url.Content(ViewBag.Picture==null?"~/adminAssets/images/upload.png":"~/Upload/images/"+ViewBag.Picture)" class="rounded-circle" height="40" width="40" />
-                @Html.EditorFor(model=>model.ImageFile,new {htmlAttributes= new{@class="custom-file-input"}})
-        </div>
+                <label asp-for="ImageFile" class="control-label"> Date Publish</label>
+                @Html.EditorFor(model=>model.ImageFile,new {htmlAttributes= new{@class="form-control", @placeholder="Pleate enter Date Publish"} })
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
             <br />
             <div class="form-group">
                 <label asp-for="DateSubmitted" class="control-label"> Date Publish</label>
@@ -60,60 +58,19 @@
                 @Html.EditorFor(model=>model.AccountID,new {htmlAttributes= new{@class="form-control", @placeholder="Pleate enter AccountID"} })
                 <span asp-validation-for="AccountID" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                    @*<input type="submit" value="Save" class="btn btn-primary" />*@
-                    <input type="submit" value="Creat" onclick="return DisplayProgressMessage(this, 'Saving...');" class="btn btn-primary" />
-            </div>           
+                <input type="submit" value="Creat" class="btn btn-primary" />
+            </div>
         }
     </div>
 </div>
 <br />
 
 <div>
-    @Html.ActionLink("Back To List","Index","Post",null, new {@class="btn btn-success"})
+    @Html.ActionLink("Back To List","Index","News",null, new {@class="btn btn-danger"})
 </div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
-    <script>
-        function DisplayProgressMessage(ctl, msg) {
-            //if use the submit button, you can use event.preventDefault to prevent the default submit form behavior.
-            event.preventDefault();
-            // Turn off the "Save" button and change text
-            $(ctl).prop("disabled", true).val(msg);
-            // Gray out background on page
-            $("body").addClass("submit-progress-bg");
-            // Wrap in setTimeout so the UI can update the spinners
-            $(".processing-preview").removeClass("hidden");
-            //submit the form.
-            setTimeout(function () {
-                $("form").submit();
-                $(".processing-preview").addClass("hidden");
-                $("body").removeClass("submit-progress-bg");
-                $(ctl).prop("disabled", false).val("Creat");
-            }, 1);
-            return false;
-        }
-        var cleaveOptions = {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            numeralPositiveOnly: true
-        };
-    </script>
-    <script>
-        ImageFile.onchange = evt => {
 
-            const [file] = ImageFile.files
-
-            if (file) {
-
-                preview.src = URL.createObjectURL(file);
-            }
-        }
-    </script>
-}
 
 <!--Kích hoạt phần tử #Content là Editor HTML -->
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

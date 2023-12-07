@@ -1,0 +1,91 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<ObjectBussiness.News>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>News Management</h1>
+
+<p>
+    @Html.ActionLink("Creat News","Create","News", null, new {@class="btn btn-success"})
+</p>
+<br />
+
+@using (Html.BeginForm("Index", "News", FormMethod.Post))
+        {
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NewsID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Contents)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShortContents)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Picture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateSubmitted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountID)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NewsID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.Raw( item.Contents)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShortContents)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Picture)
+            </td>
+            <td>
+                @Convert.ToDateTime(item.DateSubmitted).ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryID)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.AccountID)
+            </td>
+            <td>
+                <div>
+                            @Html.ActionLink("Update", "Edit", new {  id=item.NewsID  },new {@class="text-success"})
+                            @Html.ActionLink("Delete", "Delete", new {  id=item.NewsID  },new {@class="text-danger"})
+                </div>   
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+}
+
+@*@section Scripts{
+    <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+	<script src="~/controller/newscontroller.js"></script>
+}*@
