@@ -13,11 +13,11 @@ namespace DataAccess
         public string Username { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
-        public string PasswordHash { get; set; }
+        public string Password{ get; set; }
 
         public bool VerifyPassword(string password)
         {
-            return BCrypt.Net.BCrypt.Verify(password, PasswordHash);
+            return BCrypt.Net.BCrypt.Verify(password, Password);
         }
     }
 }
