@@ -2,7 +2,7 @@
 
 namespace WebMVC.Areas.Admin.Controllers
 {
-    public class LoginController : Controller
+    public class logController : Controller
     {
 		[HttpGet]
 		public IActionResult logup()
@@ -17,10 +17,11 @@ namespace WebMVC.Areas.Admin.Controllers
 		}
 
         [HttpPost]
-		public IActionResult Login(string username,string password)
+		public IActionResult login(string username ,string password)
 		{
+			var use = username;
+			var pas = password;
 			return View();
 		}
-        
-	}
+     }   
 }

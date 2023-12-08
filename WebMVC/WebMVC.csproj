@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Admin\Views\Login\login.cshtml" />
-    <None Include="Areas\Admin\Views\Login\logup.cshtml" />
+    <None Include="Areas\Admin\Views\log\login.cshtml" />
+    <None Include="Areas\Admin\Views\log\logup.cshtml" />
   </ItemGroup>
 
 </Project>

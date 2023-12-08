@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace ObjectBussiness
 {
@@ -28,5 +29,10 @@ namespace ObjectBussiness
         public virtual Exam? Exam { get; set; }
         [JsonIgnore]
         public virtual ExamRegister? ExamRegister { get; set; }
+
+        public bool VerifyPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, Password);
+        }
     }
 }
