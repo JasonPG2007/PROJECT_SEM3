@@ -24,4 +24,9 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Areas\Admin\Views\Login\login.cshtml" />
+    <None Include="Areas\Admin\Views\Login\logup.cshtml" />
+  </ItemGroup>
+
 </Project>
