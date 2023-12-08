@@ -36,5 +36,6 @@ namespace DataAccess
                 return string.Equals(hashedInputPassword, HashedPassword);
             }
         }
+
     }
 }

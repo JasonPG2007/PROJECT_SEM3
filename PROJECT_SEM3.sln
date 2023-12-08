@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "WebAPI\WebAPI.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{E626B338-2C2B-4971-A8FA-9BF40070535D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{8FDB07CF-3685-49AB-8AEA-8C4EE1284B2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{8FDB07CF-3685-49AB-8AEA-8C4EE1284B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBussiness", "ObjectBussiness\ObjectBussiness.csproj", "{CCBB6EA1-E0CE-4EA3-AB3B-60156B285512}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObjectBussiness", "ObjectBussiness\ObjectBussiness.csproj", "{CCBB6EA1-E0CE-4EA3-AB3B-60156B285512}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
