@@ -1,0 +1,78 @@
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@model IEnumerable<ObjectBussiness.NewsCategory>
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<div class="container-fluid py-4">
+
+    <p>
+        <a style="color:black;background-color:yellow" class="btn" href="@Url.Action("Create","NewsCategory")">Create Category</a>
+    </p>
+    <br />
+
+    @using (Html.BeginForm("Index", "NewsCategory", FormMethod.Post))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header pb-0">
+                        <h6>Authors table</h6>
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            @Html.DisplayNameFor(model => model.CategoryID)
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            @Html.DisplayNameFor(model => model.CategoryName)
+                                        </th>                                      
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.CategoryID)</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.CategoryName)</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    @Html.ActionLink("Update", "Edit", new { id = item.CategoryID }, new { @class = "text-success" })
+                                                    @Html.ActionLink("Delete", "Delete", new { id = item.CategoryID }, new { @class = "text-danger" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="class=" pull-right">
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }))
+</div>

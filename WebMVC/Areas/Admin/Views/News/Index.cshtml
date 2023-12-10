@@ -1,4 +1,5 @@
-﻿@using X.PagedList.Mvc.Core;
+﻿@using ObjectBussiness;
+@using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @model IEnumerable<ObjectBussiness.News>
 
@@ -32,24 +33,22 @@
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             @Html.DisplayNameFor(model => model.Title)
-                                        </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            @Html.DisplayNameFor(model => model.Contents)
-                                        </th>
+                                        </th>                                     
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             @Html.DisplayNameFor(model => model.ShortContents)
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             @Html.DisplayNameFor(model => model.Picture)
+                                            
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             @Html.DisplayNameFor(model => model.DateSubmitted)
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            @Html.DisplayNameFor(model => model.CategoryID)
+                                            @Html.DisplayNameFor(model => model.NewsCategory)
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            @Html.DisplayNameFor(model => model.AccountID)
+                                            @Html.DisplayNameFor(model => model.Account)
                                         </th>
                                         <th>Action</th>
                                     </tr>
@@ -75,13 +74,6 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@Html.Raw(item.Contents)</h6>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.ShortContents)</h6>
                                                     </div>
                                                 </div>
@@ -89,7 +81,7 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm"> @Html.DisplayFor(modelItem => item.Picture)</h6>
+                                                        <img class="img-fluid" src="~/images/@item.Picture" style="object-fit:cover; height:50px; width:50px">
                                                     </div>
                                                 </div>
                                             </td>
@@ -103,14 +95,14 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.CategoryID)</h6>
+                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.NewsCategory.CategoryName)</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.AccountID)</h6>
+                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.Account.Password)</h6>
                                                     </div>
                                                 </div>
                                             </td>

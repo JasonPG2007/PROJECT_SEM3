@@ -9,6 +9,7 @@ using static System.Net.WebRequestMethods;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class QuestionController : Controller
     {
         private readonly HttpClient httpClient;

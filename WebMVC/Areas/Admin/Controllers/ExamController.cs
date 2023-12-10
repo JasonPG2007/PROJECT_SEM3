@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ExamController : Controller
     {
         private readonly HttpClient httpClient;

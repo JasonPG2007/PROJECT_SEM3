@@ -39,8 +39,7 @@
                 <div class="form-group">
                     <label asp-for="Picture" class="control-label"></label>
                     @Html.EditorFor(model => model.Picture, new { htmlAttributes = new { @class = "form-control" } })
-                    <img id="preview" src="@Url.Content(ViewBag.Picture==null?"~/adminAssets/images/upload.png":"~/Upload/images/"+ViewBag.Picture)" class="rounded-circle" height="40" width="40" />
-                    @*@Html.EditorFor(model=>model.ImageFile,new {htmlAttributes= new{@class="custom-file-input"}})*@
+                    <img class="img-fluid" src="~/images/@Model.Picture" style="object-fit:cover; height:50px; width:50px">
                 </div>
                 <br />
                 <div class="form-group">

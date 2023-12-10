@@ -14,6 +14,6 @@ namespace ObjectBussiness
         public int CategoryID { get; set; }
         [Required]
         public string CategoryName { get; set; }
-        public virtual ICollection<News>? News { get; set; }
+        public virtual ICollection<News>? News { get; set; } = new List<News>();
     }
 }

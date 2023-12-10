@@ -25,7 +25,7 @@ namespace Repository
         public void EditNews(News n) => NewsDAO.EditNews(n);
         public void DeleteNews(News n) => NewsDAO.DeleteNews(n);
         public News GetNewsById(int id) => NewsDAO.GetNewsById(id);
-        public List<NewsCategory> GetNewsCategories() => NewsCategoryDAO.GetNewsCategories();
+        public List<NewsCategory> GetNewsCategories() => NewsCategoryDAO.GetNewsCategoriesList();
         public List<News> GetNewsList() => NewsDAO.GetNewsList();
     }
 }

@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
             }
         }
         // upload file
-        [HttpPost("uploadfile")]
+        /*[HttpPost("uploadfile")]
         public async Task<IActionResult> PostWithImage([FromForm] NewsImage n)
         {
             var news = new News { NewsID = n.NewsID, Title = n.Title, Contents = n.Contents, ShortContents = n.ShortContents, DateSubmitted = n.DateSubmitted, AccountID = n.AccountID, CategoryID = n.CategoryID };
@@ -77,22 +77,30 @@ namespace WebAPI.Controllers
             }
             _repository.InsertNews(news);
             return Ok(news);
-        }
+        }*/
         // upload file 2
-        [HttpPost("uploadfile-json")]
-        public async Task<IActionResult> PostWithImageAsyn([FromForm] string datajson, IFormFile ImageFile)
+        [HttpPost("uploadfile")]
+        public async Task<IActionResult> PostWithImage([FromForm] NewsImage n)
         {
-            var n = JsonConvert.DeserializeObject<News>(datajson);
-            var news = new News { NewsID = n.NewsID, Title = n.Title, Contents = n.Contents, ShortContents = n.ShortContents, DateSubmitted = n.DateSubmitted, AccountID = n.AccountID, CategoryID = n.CategoryID };
-            if (ImageFile.Length > 0)
+            var news = new News
             {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageFile.FileName);
+                NewsID = n.NewsID,
+                Title = n.Title,
+                Contents = n.Contents,
+                ShortContents = n.ShortContents,
+                DateSubmitted = n.DateSubmitted,
+                AccountID = n.AccountID,
+                CategoryID = n.CategoryID
+            };
+            if (n.ImageFile.Length > 0)
+            {
+                var fileName = Path.GetFileName(n.ImageFile.FileName);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
                 using (var stream = System.IO.File.Create(path))
                 {
-                    await ImageFile.CopyToAsync(stream);
-
+                    await n.ImageFile.CopyToAsync(stream);
                 }
-                news.Picture = "/images/" + ImageFile.FileName;
+                news.Picture = fileName;
             }
             else
             {

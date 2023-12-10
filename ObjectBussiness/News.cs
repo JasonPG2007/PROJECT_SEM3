@@ -32,12 +32,9 @@ namespace ObjectBussiness
         [JsonIgnore]
         public virtual NewsCategory? NewsCategory { get; set; }
 
-        [NotMapped]
+/*        [NotMapped]
         [DisplayName("Upload File")]
-        public IFormFile? ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }*/
 
-        /*[NotMapped]
-        [DisplayName("Upload File")]
-        public IFormFile ImageNews { get; set; }*/
     }
 }

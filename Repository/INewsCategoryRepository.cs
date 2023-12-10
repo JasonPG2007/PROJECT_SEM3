@@ -9,5 +9,10 @@ namespace Repository
 {
     public interface INewsCategoryRepository
     {
+        void InsertNewsCategory(NewsCategory n);
+        void EditNewsCategory(NewsCategory n);
+        void DeleteNewsCategory(NewsCategory n);
+        NewsCategory GetNewsCategoryById(int id);
+        List<NewsCategory> GetNewsCategoriesList();
     }
 }
