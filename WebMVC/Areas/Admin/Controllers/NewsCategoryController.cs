@@ -29,7 +29,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             List<NewsCategory> newsCategoryList = JsonSerializer.Deserialize<List<NewsCategory>>(strData, option);
-            int pageNumber = page ?? 1; // Nếu page là null, sử dụng trang 1.
+            int pageNumber = (page ?? 1); // Nếu page là null, sử dụng trang 1.
             int pageSize = 5; // 
             IPagedList<NewsCategory> pagedNewsCategories = newsCategoryList.ToPagedList(pageNumber, pageSize);
             return View(pagedNewsCategories);

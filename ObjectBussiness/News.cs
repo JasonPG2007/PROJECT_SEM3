@@ -17,7 +17,7 @@ namespace ObjectBussiness
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int NewsID { get; set; }
         [Display(Name = "Title")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
         [AllowHtml]
         public string? Contents { get; set; }
         public string? ShortContents { get; set; }
@@ -31,10 +31,5 @@ namespace ObjectBussiness
         public virtual Account? Account { get; set; }
         [JsonIgnore]
         public virtual NewsCategory? NewsCategory { get; set; }
-
-/*        [NotMapped]
-        [DisplayName("Upload File")]
-        public IFormFile? ImageFile { get; set; }*/
-
     }
 }

@@ -15,13 +15,13 @@
     </p>
     <br />
 
-    @using (Html.BeginForm("Index", "News", FormMethod.Post))
+    @using (Html.BeginForm("Index", "News", FormMethod.Get))
     {
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4">
                     <div class="card-header pb-0">
-                        <h6>Authors table</h6>
+                        <h6>News table</h6>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
@@ -93,11 +93,16 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.NewsCategory.CategoryName)</h6>
-                                                    </div>
-                                                </div>
+                                                    <div class="d-flex px-2 py-1">
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            @if (item.NewsCategory != null)
+                                                            {
+                                                                <h6 class="mb-0 text-sm">
+                                                                    @Html.DisplayFor(modelItem => item.NewsCategory.CategoryName)
+                                                                </h6>
+                                                            }
+                                                        </div>
+                                                    </div>                                                                                     
                                             </td>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
@@ -108,8 +113,8 @@
                                             </td>
                                             <td>
                                                 <div>
-                                                    @Html.ActionLink("Update", "Edit", new { id = item.NewsID }, new { @class = "text-success" })
-                                                    @Html.ActionLink("Delete", "Delete", new { id = item.NewsID }, new { @class = "text-danger" })
+                                                    <button type="button" class="btn btn-success">@Html.ActionLink("Update", "Edit", new { id = item.NewsID })</button>&nbsp;
+                                                    <button type="button" class="btn btn-danger">@Html.ActionLink("Delete", "Delete", new { id = item.NewsID })</button>&nbsp;                                                                              
                                                 </div>
                                             </td>
                                         </tr>
@@ -123,7 +128,9 @@
         </div>
     }
 </div>
-@*@section Scripts{
-            <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
-            <script src="~/controller/newscontroller.js"></script>
-            }*@
+<div class="class=" pull-right">
+    <button type="button" class="btn btn-info">
+        @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }))
+    </button>
+    
+</div>

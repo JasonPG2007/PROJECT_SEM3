@@ -17,9 +17,11 @@ namespace WebAPI.Controllers
         INewsRepository _newsRepository = null;
         private readonly IWebHostEnvironment webHostEnvironment;
         private INewsRepository _repository = new NewsRepository();
+        PetroleumBusinessDBContext db;
 
         public NewsControllerApi(IWebHostEnvironment webHostEnvironment)
         {
+            db = new PetroleumBusinessDBContext();
             _newsRepository = new NewsRepository();
             this.webHostEnvironment = webHostEnvironment;
         }
@@ -57,28 +59,6 @@ namespace WebAPI.Controllers
             }
         }
         // upload file
-        /*[HttpPost("uploadfile")]
-        public async Task<IActionResult> PostWithImage([FromForm] NewsImage n)
-        {
-            var news = new News { NewsID = n.NewsID, Title = n.Title, Contents = n.Contents, ShortContents = n.ShortContents, DateSubmitted = n.DateSubmitted, AccountID = n.AccountID, CategoryID = n.CategoryID };
-            if (n.ImageFile.Length > 0)
-            {
-                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", n.ImageFile.FileName);
-                using (var stream = System.IO.File.Create(path))
-                {
-                    await n.ImageFile.CopyToAsync(stream);
-
-                }
-                news.Picture = "/images/" + n.ImageFile.FileName;
-            }
-            else
-            {
-                news.Picture = "";
-            }
-            _repository.InsertNews(news);
-            return Ok(news);
-        }*/
-        // upload file 2
         [HttpPost("uploadfile")]
         public async Task<IActionResult> PostWithImage([FromForm] NewsImage n)
         {
@@ -135,6 +115,12 @@ namespace WebAPI.Controllers
             _repository.DeleteNews(temp);
             return NoContent();
         }
-        // Upload Image
+        [Route("GetNewsCategory")]
+        [HttpGet]
+        public IEnumerable<object> GetNewsCategoryID()
+        {
+            var rs = db.NewsCategories.Select(n => new { n.CategoryID, n.CategoryName }).ToList();
+            return rs;
+        }
     }
 }

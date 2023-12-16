@@ -13,43 +13,44 @@
             {
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="NewsID" class="control-label"></label>
+                    @Html.LabelFor(n => n.NewsID)
                     @Html.EditorFor(model => model.NewsID, new { htmlAttributes = new { @class = "form-control" } })
                     <span asp-validation-for="NewsID" class="text-danger"></span>
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
+                    @Html.LabelFor(n => n.Title)
                     @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="Contents" class="control-label"></label>
+                    @Html.LabelFor(n => n.Contents)
                     @Html.TextAreaFor(model => model.Contents, new { @class = "form-control", id = "summernote" })
                     @Html.ValidationMessageFor(model => model.Contents, "", new { @class = "text-danger" })
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="ShortContents" class="control-label"></label>
+                    @Html.LabelFor(n => n.ShortContents)
                     @Html.EditorFor(model => model.ShortContents, new { htmlAttributes = new { @class = "form-control" } })
                     <span asp-validation-for="ShortContents" class="text-danger"></span>
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="Picture" class="control-label"></label>
+                    <label asp-for="Picture" class="control-label">Avatar</label>
                     @Html.EditorFor(model => model.Picture, new { htmlAttributes = new { @class = "form-control" } })
+                    <span asp-validation-for="Picture" class="text-danger"></span>
                     <img class="img-fluid" src="~/images/@Model.Picture" style="object-fit:cover; height:50px; width:50px">
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="AccountID" class="control-label"></label>
+                    @Html.LabelFor(n => n.AccountID)
                     @Html.EditorFor(model => model.AccountID, new { htmlAttributes = new { @class = "form-control" } })
                     <span asp-validation-for="AccountID" class="text-danger"></span>
                 </div>
                 <br />
                 <div class="form-group">
-                    <label asp-for="CategoryID" class="control-label"></label>
+                    @Html.LabelFor(n => n.CategoryID)
                     @Html.EditorFor(model => model.CategoryID, new { htmlAttributes = new { @class = "form-control" } })
                     <span asp-validation-for="CategoryID" class="text-danger"></span>
                 </div>

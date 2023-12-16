@@ -1,11 +1,19 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using ObjectBussiness;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using X.PagedList;
+using Microsoft.AspNetCore.JsonPatch;
+using Repository;
+using Microsoft.Extensions.Options;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
@@ -14,15 +22,21 @@ namespace WebMVC.Areas.Admin.Controllers
     {
         private readonly HttpClient _httpClient = null;
         private string NewsApiUrl = "";
+        PetroleumBusinessDBContext db;
+        INewsRepository _newsRepository = null;
+        INewsCategoryRepository _newsCategoryRepository = null;
         public NewsController()
         {
+            _newsCategoryRepository = new NewsCategoryRepository();
+            _newsRepository = new NewsRepository();
+            db = new PetroleumBusinessDBContext();
             _httpClient = new HttpClient();
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             _httpClient.DefaultRequestHeaders.Accept.Add(contentType);
             NewsApiUrl = "https://localhost:7274/api/NewsControllerApi";      
         }
         // GET: NewsController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
             HttpResponseMessage res = await _httpClient.GetAsync(NewsApiUrl);
             string strData = await res.Content.ReadAsStringAsync();
@@ -31,18 +45,54 @@ namespace WebMVC.Areas.Admin.Controllers
                 PropertyNameCaseInsensitive = true,
             };
             List<News> newsList = JsonSerializer.Deserialize<List<News>>(strData, option);
-            return View(newsList);
+
+            int pageNumber = page ?? 1;
+            int pageSize = 5;
+
+            IPagedList<News> pagedNewsList = newsList.ToPagedList(pageNumber, pageSize);
+            return View(pagedNewsList);
         }
+
 
         // GET: NewsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            // Gửi yêu cầu GET đến API để lấy thông tin chi tiết theo ID
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync($"{NewsApiUrl}/{id}");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var news = JsonSerializer.Deserialize<News>(data, options);
+
+                // Hiển thị chi tiết của news trên view
+                return View(news);
+            }
+            else
+            {
+                // Hiển thị thông báo lỗi nếu không lấy được dữ liệu
+                return View("Error", new { message = $"Error fetching news details: {responseMessage.StatusCode}" });
+            }
         }
 
+
         // GET: NewsController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
+            HttpResponseMessage responseMessage = await _httpClient.GetAsync("https://localhost:7274/api/NewsControllerApi/GetNewsCategory");
+            var data = await responseMessage.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<NewsCategory> listCategory = JsonSerializer.Deserialize<List<NewsCategory>>(data, options);
+            List<SelectListItem> selectList = new List<SelectListItem>();
+            foreach (var item in listCategory)
+            {
+                selectList.Add(new SelectListItem { Value = item.CategoryID.ToString(), Text = item.CategoryName });
+            }
+            ViewBag.Items = selectList;
             return View();
         }
 
@@ -175,24 +225,5 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
-/*        public async Task<ActionResult> NewsPage(int id)
-        {
-            if (id != 0)
-            {
-                HttpResponseMessage responseMessage = await _httpClient.GetAsync($"{NewsApiUrl}/{id}");
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("NewsPage", "News", new { id = id });
-                }
-                TempData["Message"] = "";
-                return View();
-            }
-            else
-            {
-                return View();
-            }
-
-        }*/
     }
 }

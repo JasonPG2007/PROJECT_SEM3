@@ -558,7 +558,7 @@ pre {
     margin-left: auto
 }
 
-.row {
+/*.row {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -566,6 +566,13 @@ pre {
     flex-wrap: wrap;
     margin-right: -15px;
     margin-left: -15px
+}
+*/
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
 }
 
 .no-gutters {
@@ -1116,10 +1123,14 @@ pre {
     }
 
     .col-md-6 {
-        -webkit-box-flex: 0;
+        /* -webkit-box-flex: 0;
         -ms-flex: 0 0 50%;
         flex: 0 0 50%;
-        max-width: 50%
+        max-width: 50%*/
+        flex-basis: calc(25% - 30px); /* 25% width with margin-right and margin-left subtraction */
+        box-sizing: border-box;
+        padding-right: 15px;
+        padding-left: 15px;
     }
 
     .col-md-7 {
