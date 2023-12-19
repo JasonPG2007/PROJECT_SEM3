@@ -4,13 +4,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ObjectBussiness;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using X.PagedList;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
     public class QuestionAdminController : Controller
     {
+        #region Variable
         private readonly HttpClient httpClient;
         private readonly string ApiUrl = "";
+        #endregion
+
+        #region Constructor
         public QuestionAdminController()
         {
             httpClient = new HttpClient();
@@ -18,8 +23,11 @@ namespace WebMVC.Areas.Admin.Controllers
             httpClient.DefaultRequestHeaders.Accept.Add(typeMedia);
             ApiUrl = "https://localhost:7274/api/QuestionAPI";
         }
+        #endregion
+
+        #region Index
         // GET: QuestionController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page)
         {
             HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
             var data = await responseMessage.Content.ReadAsStringAsync();
@@ -27,9 +35,12 @@ namespace WebMVC.Areas.Admin.Controllers
             {
                 PropertyNameCaseInsensitive = true,
             };
-            List<Question> listQuestions = JsonSerializer.Deserialize<List<Question>>(data, options);
+            IPagedList<Question> listQuestions = JsonSerializer.Deserialize<List<Question>>(data, options).ToPagedList(page ?? 1, 5);
             return View(listQuestions);
         }
+        #endregion
+
+        #region StartQuiz View
         public async Task<ActionResult> StartQuiz(int id)
         {
             HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetQuestionByExam/{id}");
@@ -50,6 +61,9 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             return View();
         }
+        #endregion
+
+        #region StartQuiz Post
         [HttpPost]
         public async Task<ActionResult> StartQuiz(Question question)
         {
@@ -62,12 +76,9 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             throw new ArgumentException("Error check , please try again");
         }
-        // GET: QuestionController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        #endregion
 
+        #region Create View
         // GET: QuestionController/Create
         public async Task<ActionResult> Create()
         {
@@ -89,7 +100,9 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             return View();
         }
+        #endregion
 
+        #region Create Post
         // POST: QuestionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,7 +131,9 @@ namespace WebMVC.Areas.Admin.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        #endregion
 
+        #region Edit View
         // GET: QuestionController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
@@ -148,7 +163,9 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             return NotFound();
         }
+        #endregion
 
+        #region Edit Post
         // POST: QuestionController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -170,7 +187,9 @@ namespace WebMVC.Areas.Admin.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        #endregion
 
+        #region Delete View
         // GET: QuestionController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
@@ -187,7 +206,9 @@ namespace WebMVC.Areas.Admin.Controllers
             }
             return NotFound();
         }
+        #endregion
 
+        #region Delete Post
         // POST: QuestionController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -210,5 +231,6 @@ namespace WebMVC.Areas.Admin.Controllers
                 throw new Exception(ex.Message);
             }
         }
+        #endregion
     }
 }

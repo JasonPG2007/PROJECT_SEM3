@@ -1,4 +1,6 @@
-﻿@model IEnumerable<ObjectBussiness.Question>
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IEnumerable<ObjectBussiness.Question>
 
 @{
     ViewData["Title"] = "Question";
@@ -129,8 +131,8 @@
                                         <td class="align-middle text-center">
                                             <div class="d-flex px-2 py-1">
                                                 <div class="d-flex flex-column justify-content-center">
-                                                    <a style="color:black;background-color:yellow" class="btn" href="~/Admin/QuestionAdmin/Edit/@item.QuestionID"></a>
-                                                    <a style="color:black;background-color:yellow" class="btn" href="~/Admin/QuestionAdmin/Delete/@item.QuestionID"></a>
+                                                    <a style="color:black;background-color:yellow" class="btn" href="~/Admin/QuestionAdmin/Edit/@item.QuestionID">Update</a>
+                                                    <a href="#" class="delete-link" data-id="@item.QuestionID" data-confirm="Bạn có thật sự muốn xoá?" data-toggle="modal" data-target="#confirmModal"><i class="fa-solid fa-trash-can"></i> Delete</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -140,6 +142,31 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page, SearchString = @Context.Request.Query["SearchString"] }),
+            new X.PagedList.Web.Common.PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })
+</div>
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Xóa</button>
             </div>
         </div>
     </div>
