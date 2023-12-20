@@ -1,9 +1,16 @@
-﻿@model IEnumerable<ObjectBussiness.Exam>
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@model IEnumerable<ObjectBussiness.Exam>
 
 @{
     ViewData["Title"] = "Exam";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
+<style>
+    .page-item .page-link {
+        color: white;
+    }
+</style>
 <div class="container-fluid py-4">
     <p>
         <a style="color:black;background-color:yellow" class="btn" href="~/Admin/ExamAdmin/Create">Create New</a>
@@ -101,7 +108,8 @@
                                                 <div class="d-flex flex-column justify-content-center">
                                                     <div>
                                                         <a class="btn btn-success" href="~/Admin/ExamAdmin/Edit/@item.ExamID">Update</a>
-                                                        <a class="btn btn-danger" class="btn" href="~/Admin/ExamAdmin/Delete/@item.ExamID">Delete</a>
+                                                        @* <a class="btn btn-danger" class="btn" href="~/Admin/ExamAdmin/Delete/@item.ExamID">Delete</a> *@
+                                                        <a href="#" class="delete-link btn btn-danger" data-id="@item.ExamID" data-confirm="Do you really want to delete?" data-toggle="modal" data-target="#confirmModal">Delete</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,12 +123,33 @@
             </div>
         </div>
     </div>
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page, SearchString = @Context.Request.Query["SearchString"] }),
+            new X.PagedList.Web.Common.PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })
+</div>
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm deletion</h5>
+                <button type="button" style="background-color:transparent;border:none" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
 </div>
 <!--   Core JS Files   -->
-<script src="~/wwwroot/assets/js/core/popper.min.js"></script>
-<script src="~/wwwroot/assets/js/core/bootstrap.min.js"></script>
-<script src="~/wwwroot/assets/js/plugins/perfect-scrollbar.min.js"></script>
-<script src="~/wwwroot/assets/js/plugins/smooth-scrollbar.min.js"></script>
 <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -133,4 +162,10 @@
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="~/wwwroot/Admin/assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+@section Scripts {
+    @{
+        DateTime date = DateTime.Now;
+    }
+    <script src="~/Admin/Scripts/jquery-ui.js"></script>
+    <script src="~/Admin/js/Controller/ExamConntroller.js?@date"></script>
+}

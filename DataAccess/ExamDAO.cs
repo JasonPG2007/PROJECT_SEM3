@@ -36,6 +36,23 @@ namespace DataAccess
             var list = context.Exams.ToList();
             return list;
         }
+        public IEnumerable<Exam> SearchOrSortByExam(string SearchString, string? sortBy)
+        {
+            using var context = new PetroleumBusinessDBContext();
+            var listModel = context.Exams.ToList();
+            if (SearchString != null)
+            {
+                try
+                {
+                    listModel = listModel.Where(x => x.ExamName.ToLower().Contains(SearchString.ToLower())).ToList();
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            return listModel;
+        }
         public Exam GetRoom(int room)
         {
             var context = new PetroleumBusinessDBContext();

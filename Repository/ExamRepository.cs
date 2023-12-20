@@ -23,5 +23,6 @@ namespace Repository
         public void UpdateExam(Exam exam) => ExamDAO.Instance.UpdateExam(exam);
         public IEnumerable<Exam> GetAllExamEnd() => ExamDAO.Instance.GetAllExamEnd();
         public void DeleteExamEnd() => ExamDAO.Instance.DeleteExamEnd();
+        public IEnumerable<Exam> SearchOrSortByExam(string SearchString, string sortBy) => ExamDAO.Instance.SearchOrSortByExam(SearchString, sortBy);
     }
 }

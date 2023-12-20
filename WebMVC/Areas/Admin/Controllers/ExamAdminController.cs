@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ObjectBussiness;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using X.PagedList;
 
 namespace WebMVC.Areas.Admin.Controllers
 {
@@ -27,32 +28,50 @@ namespace WebMVC.Areas.Admin.Controllers
 
         #region Index
         // GET: ExamController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string SearchString, int? page, string? sortBy)
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
-            var data = await responseMessage.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
+            if (SearchString == null)
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            List<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options);
-
-            HttpResponseMessage responseMessageEnd = await httpClient.GetAsync("https://localhost:7274/api/ExamAPI/GetAllExamEnd");
-            var dataEnd = await responseMessage.Content.ReadAsStringAsync();
-            var optionsEnd = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            };
-            List<Exam> listExamsEnd = JsonSerializer.Deserialize<List<Exam>>(data, options);
-            if (listExamsEnd != null)
-            {
-                HttpResponseMessage responseMessageDelete = await httpClient.DeleteAsync("https://localhost:7274/api/ExamAPI/DeleteExamEnd");
-                if (responseMessageDelete.IsSuccessStatusCode == false)
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
                 {
-                    throw new ArgumentException($"{responseMessageDelete.EnsureSuccessStatusCode}");
+                    PropertyNameCaseInsensitive = true,
+                };
+                IPagedList<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options).ToPagedList(page ?? 1, 5);
+
+                HttpResponseMessage responseMessageEnd = await httpClient.GetAsync("https://localhost:7274/api/ExamAPI/GetAllExamEnd");
+                var dataEnd = await responseMessage.Content.ReadAsStringAsync();
+                var optionsEnd = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                List<Exam> listExamsEnd = JsonSerializer.Deserialize<List<Exam>>(data, options);
+                if (listExamsEnd != null)
+                {
+                    HttpResponseMessage responseMessageDelete = await httpClient.DeleteAsync("https://localhost:7274/api/ExamAPI/DeleteExamEnd");
+                    if (responseMessageDelete.IsSuccessStatusCode == false)
+                    {
+                        throw new ArgumentException($"{responseMessageDelete.EnsureSuccessStatusCode}");
+                    }
                 }
+                return View(listExams);
             }
-            return View(listExams);
+            else
+            {
+                HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/ExamAPI/Search?SearchString={SearchString}");
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                IPagedList<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options).ToPagedList(page ?? 1, 5);
+                if (listExams.Count < 0)
+                {
+                    TempData["msg"] = $"There is no data matching the keyword '{SearchString}'";
+                }
+                return View(listExams);
+            }
         }
         #endregion
 
@@ -287,5 +306,34 @@ namespace WebMVC.Areas.Admin.Controllers
         }
         #endregion
 
+        #region Delete Id
+        [HttpPost]
+        public async Task<JsonResult> DeleteId(int id)
+        {
+            try
+            {
+                HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                Exam exam = JsonSerializer.Deserialize<Exam>(data, options);
+                if (exam == null)
+                {
+                    return Json(new { success = false, message = "No tests found" });
+                }
+                /*return Json(new { success = true, id = id});*/
+                return Json(new
+                {
+                    status = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        #endregion
     }
 }

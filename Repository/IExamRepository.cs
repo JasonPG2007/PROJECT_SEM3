@@ -10,6 +10,7 @@ namespace Repository
     public interface IExamRepository
     {
         public IEnumerable<Exam> GetExams();
+        public IEnumerable<Exam> SearchOrSortByExam(string SearchString, string sortBy);
         public Exam GetExamById(int id);
         public void InsertExam(Exam exam);
         public void UpdateExam(Exam exam);

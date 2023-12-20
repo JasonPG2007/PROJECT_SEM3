@@ -21,6 +21,12 @@ namespace WebAPI.Controllers
         {
             return examRepository.GetExams();
         }
+        [Route("Search")]
+        [HttpGet]
+        public IEnumerable<Exam> Search(string SearchString, string? sortBy)
+        {
+            return examRepository.SearchOrSortByExam(SearchString, sortBy);
+        }
 
         [Route("GetAllExamEnd")]
         [HttpGet]
