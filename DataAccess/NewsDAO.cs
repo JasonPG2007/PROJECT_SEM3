@@ -181,7 +181,32 @@ namespace DataAccess
 
 
         ///////////////////////////////////////---2-----//////////////////////////////////////////////////////////////////
+
         public static List<News> GetNewsList()
+        {
+            using (var context = new PetroleumBusinessDBContext())
+            {
+                var list = from a in context.News
+                           join b in context.NewsCategories on a.CategoryID equals b.CategoryID
+                           join c in context.Accounts on a.AccountID equals c.AccountID
+                           select new News
+                           {
+                               NewsID = a.NewsID,
+                               Title = a.Title,
+                               Contents = a.Contents,
+                               ShortContents = a.ShortContents,
+                               Picture = a.Picture,
+                               DateSubmitted = a.DateSubmitted,
+                               AccountID = a.AccountID,
+                               CategoryID = a.CategoryID,
+                               CategoryName = b.CategoryName,
+                               AccountName = c.Password
+                           };
+
+                return list.ToList();
+            }
+        }
+        /*public static List<News> GetNewsList()
         {
             var list = new List<News>();
             try
@@ -196,8 +221,7 @@ namespace DataAccess
                 throw new Exception(ex.Message);
             };
             return list;
-        }
-
+        }*/
         public static News GetNewsById(int id)
         {
             News n = new News();

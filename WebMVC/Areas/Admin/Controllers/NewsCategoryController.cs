@@ -54,9 +54,13 @@ namespace WebMVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                Random random = new Random();
+                n.CategoryID = random.Next();
                 string strData = JsonSerializer.Serialize(n);
                 var contentData = new StringContent(strData, System.Text.Encoding.UTF8, "application/json");
+
                 HttpResponseMessage res = await _httpClient.PostAsync(NewsCategoryApiUrl, contentData);
+
                 if (res.IsSuccessStatusCode)
                 {
                     TempData["Message"] = "News category inserted successfully";
@@ -64,7 +68,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["Message"] = "Error while call Web API";
+                    TempData["Message"] = "Error while calling Web API";
                 }
             }
             return View(n);

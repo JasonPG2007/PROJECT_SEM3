@@ -10,7 +10,7 @@ namespace ObjectBussiness
 {
     public class NewsCategory
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int CategoryID { get; set; }
         [Required]
         public string? CategoryName { get; set; }

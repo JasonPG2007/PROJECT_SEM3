@@ -122,5 +122,6 @@ namespace WebAPI.Controllers
             var rs = db.NewsCategories.Select(n => new { n.CategoryID, n.CategoryName }).ToList();
             return rs;
         }
+        
     }
 }

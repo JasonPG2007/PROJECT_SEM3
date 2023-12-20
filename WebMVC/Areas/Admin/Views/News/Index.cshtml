@@ -95,19 +95,16 @@
                                             <td>
                                                     <div class="d-flex px-2 py-1">
                                                         <div class="d-flex flex-column justify-content-center">
-                                                            @if (item.NewsCategory != null)
-                                                            {
                                                                 <h6 class="mb-0 text-sm">
-                                                                    @Html.DisplayFor(modelItem => item.NewsCategory.CategoryName)
+                                                                    @Html.DisplayFor(modelItem => item.CategoryName)
                                                                 </h6>
-                                                            }
                                                         </div>
                                                     </div>                                                                                     
                                             </td>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.Account.Password)</h6>
+                                                        <h6 class="mb-0 text-sm">@Html.DisplayFor(modelItem => item.AccountName)</h6>
                                                     </div>
                                                 </div>
                                             </td>

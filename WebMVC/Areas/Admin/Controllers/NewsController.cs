@@ -162,11 +162,24 @@ namespace WebMVC.Areas.Admin.Controllers
                     PropertyNameCaseInsensitive = true
                 };
                 News n = JsonSerializer.Deserialize<News>(strData, options);
+                HttpResponseMessage responseMessageList = await _httpClient.GetAsync("https://localhost:7274/api/NewsControllerApi/GetNewsCategory");
+                var dataList = await responseMessageList.Content.ReadAsStringAsync();
+                var optionsList = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                List<NewsCategory> newsCate = JsonSerializer.Deserialize<List<NewsCategory>>(dataList, optionsList);
+                List<SelectListItem> selectListItems = new List<SelectListItem>();
+                foreach (var item in newsCate)
+                {
+                    selectListItems.Add(new SelectListItem { Value = item.CategoryID.ToString(), Text = item.CategoryName });
+                }
+                ViewBag.Items = selectListItems;
                 return View(n);
             }
-            return View();
+            return NotFound();
         }
-
+           
         // POST: NewsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -179,7 +192,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 HttpResponseMessage res = await _httpClient.PutAsync($"{NewsApiUrl}/{id}", contentData);
                 if (res.IsSuccessStatusCode)
                 {
-                    TempData["Message"] = "Product updated successfully";
+                    TempData["Message"] = "News updated successfully";
                     return RedirectToAction(nameof(Index));
                 }
                 else

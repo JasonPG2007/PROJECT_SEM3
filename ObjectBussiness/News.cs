@@ -27,6 +27,10 @@ namespace ObjectBussiness
         public int AccountID { get; set; }
         [Display(Name = "Category ID")]
         public int CategoryID { get; set; }
+        [NotMapped]
+        public string? CategoryName { get; set; }
+        [NotMapped]
+        public string? AccountName { get; set; }
         [JsonIgnore]
         public virtual Account? Account { get; set; }
         [JsonIgnore]

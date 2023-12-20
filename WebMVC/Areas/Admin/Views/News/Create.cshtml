@@ -49,7 +49,7 @@
                 </div>
                 <br />
                 <div class="form-group">
-                    @Html.LabelFor(n => n.CategoryID)                
+                    <label asp-for="CategoryID" class="control-label">News Category</label>
                     <div class="col-md-10">
                         @Html.DropDownListFor(model => model.CategoryID, ViewBag.Items as IEnumerable<SelectListItem>?? Enumerable.Empty<SelectListItem>(), "Choose an category", new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
