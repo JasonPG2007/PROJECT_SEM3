@@ -40,44 +40,6 @@ namespace WebMVC.Areas.Admin.Controllers
         }
         #endregion
 
-        #region StartQuiz View
-        public async Task<ActionResult> StartQuiz(int id)
-        {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetQuestionByExam/{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var data = await responseMessage.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                List<Question> question = JsonSerializer.Deserialize<List<Question>>(data, options);
-                if (question.Count == 0)
-                {
-                    ViewBag.Message = "There aren't any questions!";
-                }
-                ViewBag.Count = question.Count();
-                return View(question);
-            }
-            return NotFound();
-        }
-        #endregion
-
-        #region StartQuiz Post
-        [HttpPost]
-        public async Task<ActionResult> StartQuiz(Question question)
-        {
-            var data = JsonSerializer.Serialize(question);
-            var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-            HttpResponseMessage responseMessage = await httpClient.PostAsync("https://localhost:7274/api/QuestionAPI/CheckAnswer", typeData);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("StartQuiz");
-            }
-            throw new ArgumentException("Error check , please try again");
-        }
-        #endregion
-
         #region Create View
         // GET: QuestionController/Create
         public async Task<ActionResult> Create()
