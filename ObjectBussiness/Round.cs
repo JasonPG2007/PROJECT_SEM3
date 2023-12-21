@@ -24,5 +24,7 @@ namespace ObjectBussiness
         public virtual ICollection<Question>? Questions { get; set; }
         [JsonIgnore]
         public virtual Exam? Exam { get; set; }
+        [NotMapped]
+        public string? ExamName { get; set; }
     }
 }

@@ -13,13 +13,13 @@ $(document).on("click", "#confirmDelete", function (e) {
     var id = $(this).data("id");
     //if (confirm($(this).data("confirm"))) {
     $.ajax({
-        url: "/Admin/ExamAdmin/DeleteId/" + id,
+        url: "/Admin/QuestionAdmin/DeleteId/" + id,
         dataType: "json",
         type: "POST",
         contentType: "application/json;charset=UTF-8",
         success: function (res) {
             if (res.status == true) {
-                window.location.href = '/Admin/ExamAdmin';
+                window.location.href = '/Admin/QuestionAdmin';
                 //$("#getCodeModal").modal("toggle");
             }
         },

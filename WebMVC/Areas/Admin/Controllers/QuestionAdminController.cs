@@ -92,7 +92,7 @@ namespace WebMVC.Areas.Admin.Controllers
             List<SelectListItem> selectList = new List<SelectListItem>();
             foreach (var item in listRound)
             {
-                selectList.Add(new SelectListItem { Value = item.RoundID.ToString(), Text = item.RoundNumber.ToString() });
+                selectList.Add(new SelectListItem { Value = $"{item.RoundID}", Text = $"{item.RoundNumber} of Exam {item.ExamName}" });
             }
             if (selectList.Count > 0)
             {
@@ -146,19 +146,22 @@ namespace WebMVC.Areas.Admin.Controllers
                     PropertyNameCaseInsensitive = true
                 };
                 Question question = JsonSerializer.Deserialize<Question>(data, options);
-                HttpResponseMessage responseMessageList = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetExamID");
+                HttpResponseMessage responseMessageList = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetRoundID");
                 var dataList = await responseMessageList.Content.ReadAsStringAsync();
                 var optionsList = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 };
-                List<Exam> questions = JsonSerializer.Deserialize<List<Exam>>(dataList, optionsList);
-                List<SelectListItem> selectListItems = new List<SelectListItem>();
-                foreach (var item in questions)
+                List<Round> listRound = JsonSerializer.Deserialize<List<Round>>(dataList, optionsList);
+                List<SelectListItem> selectList = new List<SelectListItem>();
+                foreach (var item in listRound)
                 {
-                    selectListItems.Add(new SelectListItem { Value = item.ExamID.ToString(), Text = item.ExamName });
+                    selectList.Add(new SelectListItem { Value = $"{item.RoundID}", Text = $"{item.RoundNumber} of Exam {item.ExamName}" });
                 }
-                ViewBag.Items = selectListItems;
+                if (selectList.Count > 0)
+                {
+                    ViewBag.Items = selectList;
+                }
                 return View(question);
             }
             return NotFound();
@@ -178,7 +181,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 HttpResponseMessage responseMessage = await httpClient.PutAsync($"{ApiUrl}/{id}", typeData);
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return RedirectToAction(nameof(Index));
+                    return Redirect("~/Admin/QuestionAdmin");
                 }
                 throw new ArgumentException("Edit failed!");
             }
@@ -229,6 +232,37 @@ namespace WebMVC.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Delete Id
+        [HttpPost]
+        public async Task<JsonResult> DeleteId(int id)
+        {
+            try
+            {
+                HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
+                HttpResponseMessage responseMessageData = await httpClient.GetAsync(ApiUrl);
+                var data = await responseMessageData.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                List<Question> exam = JsonSerializer.Deserialize<List<Question>>(data, options);
+                if (exam == null)
+                {
+                    return Json(new { success = false, message = "No tests found" });
+                }
+                /*return Json(new { success = true, id = id});*/
+                return Json(new
+                {
+                    status = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
         }
         #endregion

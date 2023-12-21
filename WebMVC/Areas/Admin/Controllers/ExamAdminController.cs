@@ -66,9 +66,9 @@ namespace WebMVC.Areas.Admin.Controllers
                     PropertyNameCaseInsensitive = true,
                 };
                 IPagedList<Exam> listExams = JsonSerializer.Deserialize<List<Exam>>(data, options).ToPagedList(page ?? 1, 5);
-                if (listExams.Count < 0)
+                if (listExams.Count == 0)
                 {
-                    TempData["msg"] = $"There is no data matching the keyword '{SearchString}'";
+                    TempData["msgSearchNull"] = $"There is no data matching the keyword '{SearchString}'";
                 }
                 return View(listExams);
             }
@@ -313,12 +313,13 @@ namespace WebMVC.Areas.Admin.Controllers
             try
             {
                 HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
-                var data = await responseMessage.Content.ReadAsStringAsync();
+                HttpResponseMessage responseMessageData = await httpClient.GetAsync(ApiUrl);
+                var data = await responseMessageData.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
                 };
-                Exam exam = JsonSerializer.Deserialize<Exam>(data, options);
+                List<Exam> exam = JsonSerializer.Deserialize<List<Exam>>(data, options);
                 if (exam == null)
                 {
                     return Json(new { success = false, message = "No tests found" });

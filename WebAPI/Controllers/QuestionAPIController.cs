@@ -74,7 +74,7 @@ namespace WebAPI.Controllers
         }
         [Route("GetRoundID")]
         [HttpGet]
-        public IEnumerable<object> GetRoundID()
+        public IEnumerable<Round> GetRoundID()
         {
             var rs = roundRepository.GetRoundId();
             return rs;

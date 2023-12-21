@@ -14,7 +14,7 @@ namespace ObjectBussiness
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Display(Name = "Question ID")]
         public int QuestionID { get; set; }
-        [Display(Name = "Round ID")]
+        [Display(Name = "Round")]
         public int RoundID { get; set; }
         [Display(Name = "Question name")]
         public string QuestionName { get; set; }

@@ -36,9 +36,18 @@ namespace DataAccess
             var list = context.Rounds.ToList();
             return list;
         }
-        public IEnumerable<object> GetRoundId()
+        public IEnumerable<Round> GetRoundId()
         {
-            var rs = db.Rounds.Select(e => new { e.RoundID, e.RoundNumber }).ToList();
+            var rs = from a in db.Rounds
+                     join b in db.Exams
+                     on a.ExamID equals b.ExamID
+                     select new Round
+                     {
+                         RoundID = a.RoundID,
+                         RoundNumber = a.RoundNumber,
+                         ExamName = b.ExamName,
+                         RoundName = a.RoundName,
+                     };
             return rs;
         }
         public Round GetRoundById(int id)

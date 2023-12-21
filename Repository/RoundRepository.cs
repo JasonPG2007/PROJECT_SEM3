@@ -19,6 +19,6 @@ namespace Repository
 
         public void DeleteRound(int id) => RoundDAO.Instance.DeleteRound(id);
 
-        public IEnumerable<object> GetRoundId() => RoundDAO.Instance.GetRoundId();
+        public IEnumerable<Round> GetRoundId() => RoundDAO.Instance.GetRoundId();
     }
 }
