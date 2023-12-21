@@ -41,7 +41,7 @@ namespace WebAPI.Controllers
             return check;
         }
         [HttpGet("GetQuestionByExam/{id}")]
-        public IEnumerable<Question> GetQuestionByExam(int id)
+        public IEnumerable<Question> GetQuestionByRound(int id)
         {
             var check = questionRepository.GetQuestionsByRound(id);
             if (check != null)

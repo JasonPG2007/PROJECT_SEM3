@@ -35,7 +35,9 @@ namespace DataAccess
             var question = from a in db.Questions
                            join b in db.Rounds
                            on a.RoundID equals b.RoundID
-                           where a.RoundID == id
+                           join c in db.Exams
+                           on b.ExamID equals c.ExamID
+                           where c.ExamID == id
                            select new Question
                            {
                                QuestionID = a.QuestionID,
@@ -52,9 +54,23 @@ namespace DataAccess
         }
         public IEnumerable<Question> GetQuestions()
         {
-            using var context = new PetroleumBusinessDBContext();
-            var listQuestion = context.Questions.ToList();
-            return listQuestion;
+            var question = from a in db.Questions
+                           join b in db.Rounds
+                           on a.RoundID equals b.RoundID
+                           select new Question
+                           {
+                               QuestionID = a.QuestionID,
+                               QuestionName = a.QuestionName,
+                               AnswerA = a.AnswerA,
+                               AnswerB = a.AnswerB,
+                               AnswerC = a.AnswerC,
+                               AnswerD = a.AnswerD,
+                               CorrectAnswer = a.CorrectAnswer,
+                               DateMake = a.DateMake,
+                               Note = a.Note,
+                               RoundName = b.RoundName
+                           };
+            return question;
         }
         public Question GetQuestionById(int id)
         {

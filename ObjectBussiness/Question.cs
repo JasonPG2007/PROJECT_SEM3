@@ -35,5 +35,7 @@ namespace ObjectBussiness
         public virtual Round? Round { get; set; }
         [NotMapped]
         public string? SelectedAnswer { get; set; }
+        [NotMapped]
+        public string? RoundName{ get; set; }
     }
 }

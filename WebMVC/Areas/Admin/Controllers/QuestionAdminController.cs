@@ -59,7 +59,7 @@ namespace WebMVC.Areas.Admin.Controllers
                 ViewBag.Count = question.Count();
                 return View(question);
             }
-            return View();
+            return NotFound();
         }
         #endregion
 
