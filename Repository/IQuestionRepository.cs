@@ -15,5 +15,6 @@ namespace Repository
         public void UpdateQuestion(Question question);
         public void DeleteQuestion(int id);
         public IEnumerable<Question> GetQuestionsByRound(int id);
+        public IEnumerable<Question> SearchByNameOrSortBy(string name, string sortBy);
     }
 }

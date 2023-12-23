@@ -28,7 +28,12 @@ namespace WebAPI.Controllers
         {
             return questionRepository.GetQuestions();
         }
-
+        [Route("Search")]
+        [HttpGet]
+        public IEnumerable<Question> Search(string name, string? sortBy)
+        {
+            return questionRepository.SearchByNameOrSortBy(name, sortBy);
+        }
         // GET api/<QuestionAPIController>/5
         [HttpGet("{id}")]
         public ActionResult<Question> Get(int id)

@@ -20,6 +20,8 @@ namespace Repository
 
         public void InsertQuestion(Question question) => QuestionDAO.Instance.InsertQuestion(question);
 
+        public IEnumerable<Question> SearchByNameOrSortBy(string name, string sortBy) => QuestionDAO.Instance.SearchByNameOrSortBy(name, sortBy);
+
         public void UpdateQuestion(Question question) => QuestionDAO.Instance.UpdateQuestion(question);
     }
 }

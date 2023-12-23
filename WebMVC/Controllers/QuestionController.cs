@@ -14,11 +14,15 @@ namespace WebMVC.Areas.Admin.Controllers
         #region Variable
         private readonly HttpClient httpClient;
         private readonly string ApiUrl = "";
+        Queue<string> questionsQueue = new Queue<string>();
         #endregion
 
         #region Constructor
         public QuestionController()
         {
+            questionsQueue.Enqueue("Câu hỏi 1");
+            questionsQueue.Enqueue("Câu hỏi 2");
+            questionsQueue.Enqueue("Câu hỏi 3");
             httpClient = new HttpClient();
             var typeMedia = new MediaTypeWithQualityHeaderValue("application/json");
             httpClient.DefaultRequestHeaders.Accept.Add(typeMedia);
@@ -44,23 +48,14 @@ namespace WebMVC.Areas.Admin.Controllers
         #region StartQuiz View
         public async Task<ActionResult> StartQuiz(int id)
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/GetQuestionByExam/{id}");
-            if (responseMessage.IsSuccessStatusCode)
+            HttpResponseMessage responseMessage = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetQueueQuestion");
+            var data = await responseMessage.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
             {
-                var data = await responseMessage.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                List<Question> question = JsonSerializer.Deserialize<List<Question>>(data, options);
-                if (question.Count == 0)
-                {
-                    ViewBag.Message = "There aren't any questions!";
-                }
-                ViewBag.Count = question.Count();
-                return View(question);
-            }
-            return NotFound();
+                PropertyNameCaseInsensitive = true
+            };
+            Question questions = JsonSerializer.Deserialize<Question>(data, options);
+            return View(questions);
         }
         #endregion
 
@@ -68,202 +63,16 @@ namespace WebMVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> StartQuiz(Question question)
         {
-            var data = JsonSerializer.Serialize(question);
-            var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-            HttpResponseMessage responseMessage = await httpClient.PostAsync("https://localhost:7274/api/QuestionAPI/CheckAnswer", typeData);
-            if (responseMessage.IsSuccessStatusCode)
+            if (questionsQueue.Count > 0)
             {
-                return RedirectToAction("StartQuiz");
+                string nextQuestion = questionsQueue.Dequeue(); // Lấy câu hỏi ở đầu Queue
+                ViewBag.CurrentQuestion = nextQuestion; // Truyền câu hỏi cho view
+                return View(); // Trả về view để hiển thị câu hỏi
             }
-            throw new ArgumentException("Error check , please try again");
-        }
-        #endregion
-
-        #region Create View
-        // GET: QuestionController/Create
-        public async Task<ActionResult> Create()
-        {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetRoundID");
-            var data = await responseMessage.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
+            else
             {
-                PropertyNameCaseInsensitive = true
-            };
-            List<Round> listRound = JsonSerializer.Deserialize<List<Round>>(data, options);
-            List<SelectListItem> selectList = new List<SelectListItem>();
-            foreach (var item in listRound)
-            {
-                selectList.Add(new SelectListItem { Value = $"{item.RoundID}", Text = $"{item.RoundNumber} of Exam {item.ExamName}" });
-            }
-            if (selectList.Count > 0)
-            {
-                ViewBag.Items = selectList;
-            }
-            return View();
-        }
-        #endregion
-
-        #region Create Post
-        // POST: QuestionController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Question question)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    Random random = new Random();
-                    question.QuestionID = random.Next();
-                    question.DateMake = DateTime.Now;
-                    var data = JsonSerializer.Serialize(question);
-                    var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-                    HttpResponseMessage responseMessage = await httpClient.PostAsync(ApiUrl, typeData);
-                    if (responseMessage.IsSuccessStatusCode)
-                    {
-                        return Redirect("~/Admin/QuestionAdmin");
-                    }
-                    throw new ArgumentException("Creat failed.");
-                }
-                return View();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Edit View
-        // GET: QuestionController/Edit/5
-        public async Task<ActionResult> Edit(int id)
-        {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{ApiUrl}/{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var data = await responseMessage.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                Question question = JsonSerializer.Deserialize<Question>(data, options);
-                HttpResponseMessage responseMessageList = await httpClient.GetAsync("https://localhost:7274/api/QuestionAPI/GetRoundID");
-                var dataList = await responseMessageList.Content.ReadAsStringAsync();
-                var optionsList = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                List<Round> listRound = JsonSerializer.Deserialize<List<Round>>(dataList, optionsList);
-                List<SelectListItem> selectList = new List<SelectListItem>();
-                foreach (var item in listRound)
-                {
-                    selectList.Add(new SelectListItem { Value = $"{item.RoundID}", Text = $"{item.RoundNumber} of Exam {item.ExamName}" });
-                }
-                if (selectList.Count > 0)
-                {
-                    ViewBag.Items = selectList;
-                }
-                return View(question);
-            }
-            return NotFound();
-        }
-        #endregion
-
-        #region Edit Post
-        // POST: QuestionController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, Question question)
-        {
-            try
-            {
-                var data = JsonSerializer.Serialize(question);
-                var typeData = new StringContent(data, System.Text.Encoding.UTF8, "application/json");
-                HttpResponseMessage responseMessage = await httpClient.PutAsync($"{ApiUrl}/{id}", typeData);
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    return Redirect("~/Admin/QuestionAdmin");
-                }
-                throw new ArgumentException("Edit failed!");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Delete View
-        // GET: QuestionController/Delete/5
-        public async Task<ActionResult> Delete(int id)
-        {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync($"{ApiUrl}/{id}");
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var data = await responseMessage.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-                Question questions = JsonSerializer.Deserialize<Question>(data, options);
-                return View(questions);
-            }
-            return NotFound();
-        }
-        #endregion
-
-        #region Delete Post
-        // POST: QuestionController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return View();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Delete Id
-        [HttpPost]
-        public async Task<JsonResult> DeleteId(int id)
-        {
-            try
-            {
-                HttpResponseMessage responseMessage = await httpClient.DeleteAsync($"{ApiUrl}/{id}");
-                HttpResponseMessage responseMessageData = await httpClient.GetAsync(ApiUrl);
-                var data = await responseMessageData.Content.ReadAsStringAsync();
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                };
-                List<Question> exam = JsonSerializer.Deserialize<List<Question>>(data, options);
-                if (exam == null)
-                {
-                    return Json(new { success = false, message = "No tests found" });
-                }
-                /*return Json(new { success = true, id = id});*/
-                return Json(new
-                {
-                    status = true
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = ex.Message });
+                ViewBag.CurrentQuestion = "Không còn câu hỏi nào"; // Hiển thị thông báo khi hết câu hỏi
+                return View(); // Trả về view để hiển thị thông báo
             }
         }
         #endregion

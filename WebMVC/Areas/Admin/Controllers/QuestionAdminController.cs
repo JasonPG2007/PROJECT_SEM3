@@ -27,16 +27,34 @@ namespace WebMVC.Areas.Admin.Controllers
 
         #region Index
         // GET: QuestionController
-        public async Task<ActionResult> Index(int? page)
+        public async Task<ActionResult> Index(string SearchString, string sortBy, int? page)
         {
-            HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
-            var data = await responseMessage.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
+            if (string.IsNullOrEmpty(SearchString))
             {
-                PropertyNameCaseInsensitive = true,
-            };
-            IPagedList<Question> listQuestions = JsonSerializer.Deserialize<List<Question>>(data, options).ToPagedList(page ?? 1, 5);
-            return View(listQuestions);
+                HttpResponseMessage responseMessage = await httpClient.GetAsync(ApiUrl);
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                };
+                IPagedList<Question> listQuestions = JsonSerializer.Deserialize<List<Question>>(data, options).ToPagedList(page ?? 1, 5);
+                return View(listQuestions);
+            }
+            else
+            {
+                HttpResponseMessage responseMessage = await httpClient.GetAsync($"https://localhost:7274/api/QuestionAPI/Search?name={SearchString}");
+                var data = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                IPagedList<Question> questions = JsonSerializer.Deserialize<List<Question>>(data, options).ToPagedList(page ?? 1, 5);
+                if (questions.Count == 0)
+                {
+                    TempData["msgSearchNull"] = $"There is no data matching the keyword '{SearchString}'";
+                }
+                return View(questions);
+            }
         }
         #endregion
 

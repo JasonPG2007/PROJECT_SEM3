@@ -72,6 +72,19 @@ namespace DataAccess
                            };
             return question;
         }
+        public IEnumerable<Question> SearchByNameOrSortBy(string name, string sortBy)
+        {
+            try
+            {
+                using var context = new PetroleumBusinessDBContext();
+                var listModel = context.Questions.Where(q => q.QuestionName.ToLower().Contains(name.ToLower())).ToList();
+                return listModel;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public Question GetQuestionById(int id)
         {
             using var context = new PetroleumBusinessDBContext();
