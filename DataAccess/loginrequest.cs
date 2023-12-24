@@ -26,16 +26,5 @@ namespace DataAccess
             }
         }
 
-        // Use this method to verify the password
-        public bool VerifyPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                string hashedInputPassword = Convert.ToBase64String(hashedBytes);
-                return string.Equals(hashedInputPassword, HashedPassword);
-            }
-        }
-
     }
 }

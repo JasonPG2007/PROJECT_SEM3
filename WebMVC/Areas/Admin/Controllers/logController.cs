@@ -10,7 +10,6 @@ namespace WebMVC.Areas.Admin.Controllers
 {
     public class LogController : Controller
     {
-        private DbModel db = new DbModel();
         [HttpGet]
         public IActionResult Logup()
         {
