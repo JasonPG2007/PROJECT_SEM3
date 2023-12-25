@@ -4,7 +4,7 @@ namespace WebAPI.System.User
 {
     public interface IUserSevice
     {
-        Task<bool> Authencate(Account request);
+        Task<bool> Authencate(ExamRegister request);
         Task<bool> Register(ExamRegister request);
     }
 }

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.PowerBI.Api.Models;
 using ObjectBussiness;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace WebAPI.System.User
 {
@@ -10,34 +11,45 @@ namespace WebAPI.System.User
     {
         private readonly UserManager<AppUser> _user;
         private readonly SignInManager<AppUser> _sign;
+
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _user = userManager;
             _sign = signInManager;
         }
 
-         public async Task<bool> Authencate(ExamRegister request)
+        public async Task<bool> Authencate(ExamRegister request)
         {
-            var user = await _user.FindByNameAsync(request.Email); if (user == null)
-            {
-  
-                return false;
-            } 
-              
-            var result = await _sign.PasswordSignInAsync(user, request., request.VerifyPassword if (result.Succeeded)
+            var user = await _user.FindByNameAsync(request.Email);
+            if (user == null)
             {
                 return false;
             }
-            var claims = new[]
+
+            var claims = new List<Claim>
+{
+            new Claim("", user.Email),
+
+              new Claim("UserPassword", request.Password),
+};
+
+
+            var examRegister =;
+            if (examRegister != null)
             {
-                new Claim(ClaimTypes.Email,user.Email);
-            new Claim(ClaimTypes.Given Name, user.FirstName);
+                claims.Add(new Claim("ExamRegisterEmail", examRegister.Email));
+                // Add more ExamRegister-related claims as needed
+            }
+
+
+            claims.Add(new Claim("UserPassword", request.Password));
+          
+            return true;
         }
+
         public Task<bool> Register(ExamRegister request)
         {
-         
-       }
-
+            throw new NotImplementedException();
         }
-     }
-
+    }
+}

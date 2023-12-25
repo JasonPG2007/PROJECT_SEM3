@@ -36,6 +36,8 @@ namespace ObjectBussiness.Migrations
                     BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ConfirmPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PlaceOfBirth = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResidentialAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -104,7 +106,7 @@ namespace ObjectBussiness.Migrations
                         principalTable: "ExamRegister",
                         principalColumn: "ExamRegisterID",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
+                         table.ForeignKey(
                         name: "FK_Accounts_Exams_ExamID",
                         column: x => x.ExamID,
                         principalTable: "Exams",

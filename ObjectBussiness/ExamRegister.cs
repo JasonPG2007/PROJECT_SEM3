@@ -14,22 +14,41 @@ namespace ObjectBussiness
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Display(Name = "Exam Register ID")]
         public int ExamRegisterID { get; set; }
+
         [Display(Name = "Candidate name")]
         public string CandidateName { get; set; }
+
         public int Age { get; set; }
-        public bool Gender { get; set; } //True(False) is Male(Female)
+        public bool Gender { get; set; } // True(False) is Male(Female)
         public DateTime BirthDay { get; set; }
+
         [Display(Name = "Phone number")]
         [RegularExpression("^0[1-9]\\d\\d{3}\\d{4}$")]
         public string Phone { get; set; }
+
         [RegularExpression("\\w+@+\\w+\\.+\\w+\\w")]
         public string Email { get; set; }
+
+        // New properties for password and password confirmation
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "Password is required")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
         [Display(Name = "Place of birth")]
         public string PlaceOfBirth { get; set; }
+
         [Display(Name = "Residential address")]
         public string ResidentialAddress { get; set; }
+
         public string City { get; set; }
         public string Country { get; set; }
+
         [JsonIgnore]
         public virtual Account? Account { get; set; }
     }
