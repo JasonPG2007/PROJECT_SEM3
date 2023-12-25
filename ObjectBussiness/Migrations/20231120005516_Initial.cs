@@ -95,7 +95,6 @@ namespace ObjectBussiness.Migrations
                     AccountID = table.Column<int>(type: "int", nullable: false),
                     ExamID = table.Column<int>(type: "int", nullable: false),
                     ExamRegisterID = table.Column<int>(type: "int", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

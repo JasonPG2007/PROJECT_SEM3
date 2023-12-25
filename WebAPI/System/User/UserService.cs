@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.PowerBI.Api.Models;
 using ObjectBussiness;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace WebAPI.System.User
 {
@@ -28,7 +26,7 @@ namespace WebAPI.System.User
 
             var claims = new List<Claim>
 {
-            new Claim("", user.Email),
+            new Claim("Username", user.Email),
 
               new Claim("UserPassword", request.Password),
 };
@@ -43,7 +41,7 @@ namespace WebAPI.System.User
 
 
             claims.Add(new Claim("UserPassword", request.Password));
-          
+
             return true;
         }
 
