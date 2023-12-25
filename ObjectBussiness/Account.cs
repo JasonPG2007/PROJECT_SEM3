@@ -21,8 +21,6 @@ namespace ObjectBussiness
         [Display(Name = "Exam Register ID")]
         public int ExamRegisterID { get; set; }
 
-        public string Password { get; set; }
-
         [JsonIgnore]
         public virtual Decentralization? Decentralization { get; set; }
 

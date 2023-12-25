@@ -33,10 +33,6 @@ namespace ObjectBussiness.Migrations
                     b.Property<int>("ExamRegisterID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("AccountID");
 
                     b.HasIndex("ExamID");
@@ -148,7 +144,9 @@ namespace ObjectBussiness.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
+                    b.Property<string>("Password")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
                     b.Property<bool>("Gender")
                         .HasColumnType("bit");
 
